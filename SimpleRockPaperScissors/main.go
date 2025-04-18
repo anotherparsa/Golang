@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"text/template"
 )
 
 func main() {
@@ -12,5 +14,17 @@ func main() {
 }
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Home Page")
+	template, err := template.ParseFiles("index.html")
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = template.Execute(w, nil)
+	
+	if err != nil {
+		log.Println(err)
+		return
+	}
 }
