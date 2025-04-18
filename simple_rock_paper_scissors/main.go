@@ -14,7 +14,11 @@ func main() {
 }
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	template, err := template.ParseFiles("index.html")
+	render_template(w, "index.html")
+}
+
+func render_template(w http.ResponseWriter, page string) {
+	template, err := template.ParseFiles(page)
 
 	if err != nil {
 		log.Println(err)
@@ -22,7 +26,7 @@ func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = template.Execute(w, nil)
-	
+
 	if err != nil {
 		log.Println(err)
 		return
