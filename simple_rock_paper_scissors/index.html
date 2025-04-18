@@ -8,18 +8,18 @@
         <h1 class="mt-4">Rock, Paper Scissors</h1>
         <hr>
 
-        <p id="player_choice">&nbsp;</p>
-        <p id="computer_choice">&nbsp;</p>
-        <p id="round_result">&nbsp;</p>
+        <p id="player_choice">player choice: &nbsp;</p>
+        <p id="computer_choice">computer choice: &nbsp;</p>
+        <p class="text-danger" id="round_result">result: &nbsp;</p>
 
         <hr>
         <p>Choose rock, paper, or scissors!</p>
         <br>
         <br>
 
-        <button class="btn btn-outline-secondary" onclick="choose(0);">Rock</button>
-        <button class="btn btn-outline-danger" onclick="choose(1)">Paper</button>
-        <button class="btn btn-outline-success" onclick="choose(2)">Scissors</button>
+        <button class="btn btn-outline-secondary" onclick="choose('rock');">Rock</button>
+        <button class="btn btn-outline-danger" onclick="choose('paper')">Paper</button>
+        <button class="btn btn-outline-success" onclick="choose('scissors')">Scissors</button>
     </div>
 </body>
 <script>
@@ -27,15 +27,19 @@
         fetch("/play?c=" + x)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
+            if (x == 'rock') {
+                document.getElementById("player_choice").innerHTML = "player choice:  ROCK";
+            } else if (x == 'paper') {
+                document.getElementById("player_choice").innerHTML = "player choice:  PAPER";
+            } else {
+                document.getElementById("player_choice").innerHTML = "player choice:  SCISSORS";
+            }
+            document.getElementById("computer_choice").innerHTML = "computer choice: " + data.computer_choice;
+            document.getElementById("round_result").innerHTML = "result: " + data.winner;
+
         })
-        if (x == 0) {
-            document.getElementById("player_choice").innerHTML = "You clicked rock";
-        } else if (x == 1) {
-            document.getElementById("player_choice").innerHTML = "You clicked paper";
-        } else {
-            document.getElementById("player_choice").innerHTML = "You clicked scissors";
-        }
+
+        
         
     }
 </script>

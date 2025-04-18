@@ -13,7 +13,7 @@ type Round struct {
 
 func Play_round(w http.ResponseWriter, r *http.Request) Round {
 	choices := []string{"rock", "paper", "scissors"}
-	var user_choice string
+	user_choice := r.URL.Query().Get("c")
 	computer_choice := choices[rand.Intn(len(choices))]
 	winner := Determine_winner(user_choice, computer_choice)
 	round := Round{
