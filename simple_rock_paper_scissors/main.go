@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
-	"text/template"
 )
 
 func main() {
-	http.HandleFunc("/", HomePageHandler)
+	http.HandleFunc("/play", play_round)
+	http.HandleFunc("/", home_page_handler)
 	fmt.Println("Starting web server on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
 
-func HomePageHandler(w http.ResponseWriter, r *http.Request) {
+func home_page_handler(w http.ResponseWriter, r *http.Request) {
 	render_template(w, "index.html")
 }
 
