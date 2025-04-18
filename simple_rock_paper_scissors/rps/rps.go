@@ -5,36 +5,46 @@ import (
 	"net/http"
 )
 
-func play_round(w http.ResponseWriter, r *http.Request) {
-	choices := []string{"rock", "paper", "scissors"}
-	var userChoice string
-	computerChoice := choices[rand.Intn(len(choices))]
-	result := determineWinner(userChoice, computerChoice)
+type Round struct {
+	Winner          string `json:"winner"`
+	Computer_choice string `json:"computer_choice"`
+	User_choice     string `json:"user_choice"`
 }
 
-func determineWinner(user_choice, computer_choice string) string {
-	if user_choice == computer_choice {
-		return "It's a tie!"
+func Play_round(w http.ResponseWriter, r *http.Request) Round {
+	choices := []string{"rock", "paper", "scissors"}
+	var user_choice string
+	computer_choice := choices[rand.Intn(len(choices))]
+	winner := Determine_winner(user_choice, computer_choice)
+	round := Round{
+		Winner:          winner,
+		Computer_choice: computer_choice,
+		User_choice:     user_choice,
 	}
+	return round
+}
 
+func Determine_winner(user_choice, computer_choice string) string {
+	if user_choice == computer_choice {
+		return "tie"
+	}
 	switch user_choice {
 	case "rock":
 		if computer_choice == "scissors" {
-			return "You win! Rock crushes scissors."
+			return "user"
 		}
-		return "You lose! Paper covers rock."
+		return "computer"
 	case "paper":
 		if computer_choice == "rock" {
-			return "You win! Paper covers rock."
+			return "user"
 		}
-		return "You lose! Scissors cut paper."
+		return "computer"
 	case "scissors":
 		if computer_choice == "paper" {
-			return "You win! Scissors cut paper."
+			return "computer"
 		}
-		return "You lose! Rock crushes scissors."
+		return "computer"
 	default:
-		return "Unexpected error."
+		return "err"
 	}
-
 }

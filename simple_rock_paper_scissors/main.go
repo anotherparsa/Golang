@@ -1,6 +1,8 @@
 package main
 
 import (
+	"SimpleRockPaperScissors/rps"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -12,6 +14,17 @@ func main() {
 	http.HandleFunc("/", home_page_handler)
 	fmt.Println("Starting web server on port 8080")
 	http.ListenAndServe(":8080", nil)
+}
+
+func play_round(w http.ResponseWriter, r *http.Request) {
+	round := rps.Play_round(w, r)
+	out, err := json.MarshalIndent(round, "", "    ")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-type", "application/json")
+	w.Write(out)
 }
 
 func home_page_handler(w http.ResponseWriter, r *http.Request) {
