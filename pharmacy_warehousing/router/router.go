@@ -13,6 +13,8 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 		home.HomePageHandler(w, r)
 	case "/login":
 		login.LoginPageHandler(w, r)
+	case "/loginhandler":
+		login.LoginHandler(w, r)
 	case "/home":
 		home.HomePageHandler(w, r)
 	default:

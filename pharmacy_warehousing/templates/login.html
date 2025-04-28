@@ -6,20 +6,16 @@
     <title>Pharmacy-warehouse Log in page</title>
 </head>
 <body>
-    <form action="">
+    <form action="/loginhandler" method="POST">
         <div>
             <p>حساب کاربری</p>
 
             <label for="username" >نام کاربری</label>
-            <input type="text" name="user" placeholder="شناسه کاربری" id="username">
-            
-            <br>
-            <label for="email1">ایمیل</label>
-            <input type="email" name="useremail" placeholder="ایمیل" id="email1">
+            <input type="text" name="username" placeholder="شناسه کاربری" id="username">
             
             <br>
             <label for="password1">رمز عبور</label>
-            <input type="password" name="userpass" placeholder="رمز عبور" id="password1">
+            <input type="password" name="password" placeholder="رمز عبور" id="password1">
             <br>
             <button type="submit">ورود به حساب</button>
         </div>
