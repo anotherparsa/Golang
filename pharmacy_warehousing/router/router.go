@@ -16,6 +16,7 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 	case "/home":
 		home.HomePageHandler(w, r)
 	default:
+		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "This is 404 page")
 	}
 }

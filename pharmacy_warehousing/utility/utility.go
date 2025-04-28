@@ -13,6 +13,7 @@ func TemplateRendering(w http.ResponseWriter, path string) {
 		log.Print(err)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 
 	err = template.Execute(w, nil)
 
