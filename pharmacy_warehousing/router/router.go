@@ -3,22 +3,27 @@ package router
 import (
 	"PharmacyWarehousing/home"
 	"PharmacyWarehousing/login"
-	"fmt"
+	"PharmacyWarehousing/products"
 	"net/http"
+	"strings"
 )
 
 func RoutingHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
+	UrlPath := r.URL.Path
+
+	if UrlPath == "/home" || UrlPath == "/" {
 		home.HomePageHandler(w, r)
-	case "/login":
-		login.LoginPageHandler(w, r)
-	case "/loginhandler":
-		login.LoginHandler(w, r)
-	case "/home":
-		home.HomePageHandler(w, r)
-	default:
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "This is 404 page")
+	} else if strings.HasPrefix(UrlPath, "/product") {
+		if UrlPath == "/products" {
+			products.ShowProducts(w, r)
+		} else {
+			products.ShowProduct(w, r)
+		}
+	} else if strings.HasPrefix(UrlPath, "/login") {
+		if UrlPath == "/login" {
+			login.LoginPageHandler(w, r)
+		} else {
+			login.LoginHandler(w, r)
+		}
 	}
 }
