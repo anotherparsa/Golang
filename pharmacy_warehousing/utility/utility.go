@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"database/sql"
 	"fmt"
@@ -61,9 +62,9 @@ func SelectAllStaff() []model.Staff {
 }
 
 func Print_staff() {
-	staff := SelectAllStaff()
-	for i, v := range staff {
-		fmt.Printf("%v and %v", i, v)
+	err := databasetool.AddStaff("Testusername10", "Testfamily10", "testpos10")
+	if err != nil {
+		fmt.Println("error adding a staff %v\n", err)
 	}
 }
 
