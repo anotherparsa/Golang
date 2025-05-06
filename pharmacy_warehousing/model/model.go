@@ -8,3 +8,12 @@ type Staff struct {
 	Position string
 	Password string
 }
+
+type Drug struct {
+	Id      string
+	Name    string
+	Drugid  string
+	Company string
+	Price   string
+	Stock   string
+}

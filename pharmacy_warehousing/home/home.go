@@ -6,5 +6,5 @@ import (
 )
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	utility.TemplateRendering(w, "templates/home.html")
+	utility.TemplateRendering(w, "./staff/templates/home.html")
 }

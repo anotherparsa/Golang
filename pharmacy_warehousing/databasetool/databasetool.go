@@ -16,7 +16,7 @@ const (
 	db_name     = "pharmacywarehouse"
 )
 
-func connect() (*sql.DB, error) {
+func Connect() (*sql.DB, error) {
 	database, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", db_user, db_password, db_address, db_port, db_name))
 
 	if err != nil {
@@ -27,7 +27,7 @@ func connect() (*sql.DB, error) {
 }
 
 func Create_staff(name string, family string, staffid string, position string, password string) {
-	database, err := connect()
+	database, err := Connect()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)
@@ -51,7 +51,7 @@ func Create_staff(name string, family string, staffid string, position string, p
 }
 
 func Read_all_staff() []model.Staff {
-	database, err := connect()
+	database, err := Connect()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)
