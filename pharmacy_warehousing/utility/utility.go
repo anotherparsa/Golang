@@ -1,9 +1,9 @@
 package utility
 
 import (
-	"http/template"
 	"log"
 	"net/http"
+	"text/template"
 )
 
 func TemplateRendering(w http.ResponseWriter, path string) {

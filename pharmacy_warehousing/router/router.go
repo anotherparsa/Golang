@@ -1,10 +1,10 @@
 package router
 
 import (
+	"PharmacyWarehousing/admin"
 	"PharmacyWarehousing/home"
 	"PharmacyWarehousing/login"
 	"PharmacyWarehousing/products"
-	"PharmacyWarehousing/utility"
 	"net/http"
 	"strings"
 )
@@ -26,7 +26,13 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			login.LoginHandler(w, r)
 		}
-	} else if UrlPath == "/staffs" {
-		utility.Print_staff()
+	} else if strings.HasPrefix(UrlPath, "/admin") {
+		if UrlPath == "/admin" || UrlPath == "/admin/home" {
+			admin.Admin_home_page_handler(w, r)
+		} else if UrlPath == "/admin/addstaff" {
+			admin.Admin_add_staff_page_handler(w, r)
+		} else if UrlPath == "/admin/addstaffprocess" {
+			admin.Admin_add_staff_processor(w, r)
+		}
 	}
 }
