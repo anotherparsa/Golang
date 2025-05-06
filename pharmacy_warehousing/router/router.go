@@ -3,8 +3,8 @@ package router
 import (
 	"PharmacyWarehousing/admin"
 	"PharmacyWarehousing/drugs"
-	"PharmacyWarehousing/home"
 	"PharmacyWarehousing/login"
+	"PharmacyWarehousing/staff"
 	"net/http"
 	"strings"
 )
@@ -13,7 +13,7 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 	UrlPath := r.URL.Path
 
 	if UrlPath == "/home" || UrlPath == "/" {
-		home.HomePageHandler(w, r)
+		staff.Staff_home_page_handler(w, r)
 	} else if strings.HasPrefix(UrlPath, "/login") {
 		if UrlPath == "/login" {
 			login.LoginPageHandler(w, r)

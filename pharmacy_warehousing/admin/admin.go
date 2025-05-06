@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"PharmacyWarehousing/databasetool"
+	"PharmacyWarehousing/staff"
 	"PharmacyWarehousing/utility"
 	"net/http"
 )
@@ -16,6 +16,6 @@ func Admin_add_staff_page_handler(w http.ResponseWriter, r *http.Request) {
 
 func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	databasetool.Create_staff(r.PostForm.Get("name"), r.PostForm.Get("family"), "0", r.PostForm.Get("position"), r.PostForm.Get("password"))
+	staff.Create_staff(r.PostForm.Get("name"), r.PostForm.Get("family"), "0", r.PostForm.Get("position"), r.PostForm.Get("password"))
 	http.Redirect(w, r, "/admin/home", 302)
 }
