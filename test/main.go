@@ -33,6 +33,16 @@ func main() {
 	for i, v := range read_all_staff() {
 		fmt.Printf("The index is %v and the value is %v\n", i, v)
 	}
+
+	delete_staff(2)
+	delete_staff(1)
+
+	for i, v := range read_all_staff() {
+		fmt.Printf("The index is %v and the value is %v\n", i, v)
+	}
+
+	update_staff("staffid", "3", "staffid", "55")
+
 }
 
 func connect() (*sql.DB, error) {
@@ -105,5 +115,54 @@ func read_all_staff() []Staff {
 	}
 
 	return staffArray
+
+}
+
+func delete_staff(staffid int) {
+	database, err := connect()
+
+	if err != nil {
+		fmt.Printf("Failed to connect to the database: %v\n", err)
+	}
+
+	defer database.Close()
+
+	querry, err := database.Prepare("DELETE FROM staff WHERE staffid=?")
+
+	if err != nil {
+		fmt.Printf("Error in preparing the querry: %v\n", err)
+	}
+
+	defer querry.Close()
+
+	_, err = querry.Exec(staffid)
+
+	if err != nil {
+		fmt.Printf("Error executing the querry: %v\n", err)
+	}
+}
+
+func update_staff(condition string, conditionValue string, updatecolumn string, updatedvalue string) {
+	database, err := connect()
+
+	if err != nil {
+		fmt.Printf("Failed to connect to the database: %v\n", err)
+	}
+
+	defer database.Close()
+
+	querry, err := database.Prepare(fmt.Sprintf("UPDATE staff SET %s=? WHERE %s=?", updatecolumn, condition))
+
+	if err != nil {
+		fmt.Printf("Error in preparing the querry: %v", err)
+	}
+
+	defer querry.Close()
+
+	_, err = querry.Exec(updatedvalue, conditionValue)
+
+	if err != nil {
+		fmt.Printf("Error in executing the querry: %v\n", err)
+	}
 
 }
