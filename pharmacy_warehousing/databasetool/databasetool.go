@@ -1,6 +1,7 @@
 package databasetool
 
 import (
+	"PharmacyWarehousing/model"
 	"database/sql"
 	"fmt"
 
@@ -47,4 +48,42 @@ func Create_staff(name string, family string, staffid string, position string, p
 	if err != nil {
 		fmt.Printf("Failed to execute the querry : %v\n", err)
 	}
+}
+
+func Read_all_staff() []model.Staff {
+	database, err := connect()
+
+	if err != nil {
+		fmt.Printf("Failed to connect to the database : %v\n", err)
+	}
+
+	defer database.Close()
+
+	rows, err := database.Query("SELECT * FROM staff")
+
+	if err != nil {
+		fmt.Printf("Failed to querry the database : %v\n", err)
+	}
+
+	defer rows.Close()
+
+	staff_instance := model.Staff{}
+	staff_array := []model.Staff{}
+
+	for rows.Next() {
+		err := rows.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Position, &staff_instance.Password)
+
+		if err != nil {
+			fmt.Printf("Failed to scan the row : %v\n", err)
+			continue
+		}
+
+		staff_array = append(staff_array, staff_instance)
+	}
+
+	if rows.Err() != nil {
+		fmt.Printf("Failed during iteration : %v\n", err)
+	}
+
+	return staff_array
 }
