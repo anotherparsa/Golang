@@ -1,72 +1,50 @@
 package databasetool
 
 import (
-	"PharmacyWarehousing/model"
 	"database/sql"
 	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	username = "testuser"
-	password = "rrc3498urc38r9j999m8j"
-	hostname = "127.0.0.1"
-	port     = "3306"
-	database = "pharmacywarehouse"
+	db_user     = "testuser"
+	db_password = "rrc3498urc38r9j999m8j"
+	db_address  = "127.0.0.1"
+	db_port     = "3306"
+	db_name     = "pharmacywarehouse"
 )
 
 func connect() (*sql.DB, error) {
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, hostname, port, database)
-	return sql.Open("mysql", dataSourceName)
+	database, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", db_user, db_password, db_address, db_port, db_name))
+
+	if err != nil {
+		fmt.Printf("Failed to connect to the database : %v\n", err)
+	}
+
+	return database, err
 }
 
-func SelectAllStaff() []model.Staff {
-	dataBase, err := connect()
+func Create_staff(name string, family string, staffid string, position string, password string) {
+	database, err := connect()
 
 	if err != nil {
-		fmt.Printf("Error connecting to the database %v\n", err)
+		fmt.Printf("Failed to connect to the database : %v\n", err)
 	}
 
-	rows, err := dataBase.Query("SELECT * FROM staff")
+	defer database.Close()
+
+	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, position, password) VALUES (?, ?, ?, ?, ?)")
 
 	if err != nil {
-		fmt.Printf("Error querying database %v\n", err)
+		fmt.Printf("Failed to prepare the querry : %v\n", err)
 	}
 
-	staffArray := []model.Staff{}
-	staffInstance := model.Staff{}
+	defer querry.Close()
 
-	for rows.Next() {
-		err = rows.Scan(&staffInstance.Id, &staffInstance.Name, &staffInstance.Family, &staffInstance.Position)
-		if err != nil {
-			fmt.Printf("Error scanning rows %v\n", err)
-			continue
-		}
-		staffArray = append(staffArray, staffInstance)
-	}
+	_, err = querry.Exec(name, family, staffid, position, password)
 
-	return staffArray
-}
-
-func AddStaff(name string, family string, position string) error {
-	// Use a prepared statement to prevent SQL injection
-	querry := "INSERT INTO staff (name, family, position) VALUES (?, ?, ?);"
-	dataBase, err := connect()
 	if err != nil {
-		return fmt.Errorf("error connecting to database: %v", err)
+		fmt.Printf("Failed to execute the querry : %v\n", err)
 	}
-	defer dataBase.Close() // Ensure the connection is closed
-
-	stmt, err := dataBase.Prepare(querry)
-	if err != nil {
-		return fmt.Errorf("error preparing statement: %v", err)
-	}
-	defer stmt.Close() // Ensure the statement is closed
-
-	// Execute the statement
-	_, err = stmt.Exec(name, family, position)
-	if err != nil {
-		return fmt.Errorf("error executing statement: %v", err)
-	}
-
-	return nil // Return nil if everything went well
 }
