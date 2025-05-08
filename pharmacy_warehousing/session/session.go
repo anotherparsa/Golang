@@ -22,3 +22,18 @@ func Read_cookie(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Your cookie name is %v and you cookie value is %v\n", cookie.Name, cookie.Value)
 }
+
+func Delete_cookie(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("loggeduser")
+
+	if err != nil {
+		fmt.Printf("Failed to read the cookie : %v\n", err)
+	}
+
+	cookie.MaxAge = -1
+	cookie.Path = "/"
+	http.SetCookie(w, cookie)
+
+	fmt.Fprintf(w, "Your cookie has been deleted")
+
+}

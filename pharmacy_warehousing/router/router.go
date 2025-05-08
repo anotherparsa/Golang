@@ -40,6 +40,8 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 			session.Set_cookie(w, r)
 		} else if UrlPath == "/cookie/read" {
 			session.Read_cookie(w, r)
+		} else if UrlPath == "/cookie/delete" {
+			session.Delete_cookie(w, r)
 		}
 	}
 }
