@@ -5,6 +5,7 @@ type Staff struct {
 	Name     string
 	Family   string
 	Staffid  string
+	Userid   string
 	Position string
 	Password string
 }

@@ -4,7 +4,6 @@ import (
 	"PharmacyWarehousing/admin"
 	"PharmacyWarehousing/drugs"
 	"PharmacyWarehousing/login"
-	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/staff"
 	"net/http"
 	"strings"
@@ -34,14 +33,6 @@ func RoutingHandler(w http.ResponseWriter, r *http.Request) {
 			drugs.Create_drug_page_handler(w, r)
 		} else if UrlPath == "/drug/adddrugprocessor" {
 			drugs.Create_drug_processor(w, r)
-		}
-	} else if strings.HasPrefix(UrlPath, "/cookie") {
-		if UrlPath == "/cookie/set" {
-			session.Set_cookie(w, r)
-		} else if UrlPath == "/cookie/read" {
-			session.Read_cookie(w, r)
-		} else if UrlPath == "/cookie/delete" {
-			session.Delete_cookie(w, r)
 		}
 	}
 }
