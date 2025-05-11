@@ -28,6 +28,6 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 		random_staffid = fmt.Sprintf("s%v", random_staffid)
 	}
 
-	staff.Create_staff(r.PostForm.Get("name"), r.PostForm.Get("family"), random_staffid, position, r.PostForm.Get("password"))
+	staff.Create_staff(w, r, r.PostForm.Get("name"), r.PostForm.Get("family"), random_staffid, position, r.PostForm.Get("password"))
 	http.Redirect(w, r, "/admin/home", 302)
 }

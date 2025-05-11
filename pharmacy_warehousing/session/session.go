@@ -3,9 +3,12 @@ package session
 import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
+	"errors"
 	"fmt"
 	"net/http"
 )
+
+var User_not_logged_in_error = errors.New("user is not logged int")
 
 func Set_session(w http.ResponseWriter, sessionid string, userid string) {
 
@@ -42,7 +45,7 @@ func Create_session(userid string, sessionid string) {
 
 func User_with_sessionid(sessionid string) (model.Staff, error) {
 	database, err := databasetool.Connect()
-	fmt.Printf("Session id is %v \n", sessionid)
+
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)
 	}
@@ -50,10 +53,10 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 	defer database.Close()
 
 	querry := "SELECT userid FROM session WHERE sessionid=?"
-	fmt.Println(querry)
+
 	row := database.QueryRow(querry, sessionid)
 	var userid string
-	fmt.Printf("user id is %v\n", userid)
+
 	err = row.Scan(&userid)
 
 	if err != nil {
@@ -61,15 +64,14 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 	}
 
 	querry = "SELECT staffid, userid, position FROM staff WHERE userid=?"
-
 	row = database.QueryRow(querry, userid)
-
 	staff_instance := model.Staff{}
-	fmt.Printf("Session id is %v \n", sessionid)
 	err = row.Scan(&staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position)
 
-	fmt.Println("HEre ")
-	fmt.Println(staff_instance)
+	if err != nil {
+		fmt.Printf("Failed to scan the row : %v\n", err)
+	}
+
 	return staff_instance, err
 
 }

@@ -2,9 +2,16 @@ package databasetool
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 )
+
+var Database_connection_failure = errors.New("Failed to connect to the database")
+var Querry_prepration_failure = errors.New("Failed to prepare the queery")
+var Querry_execution_failure = errors.New("Failed to execute the querry")
+var Scanning_rows_failure = errors.New("Failed to scan the rows")
 
 const (
 	db_user     = "testuser"

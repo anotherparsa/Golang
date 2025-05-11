@@ -12,84 +12,107 @@ import (
 )
 
 func Staff_home_page_handler(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("sessionid")
-
-	if err != nil {
-		fmt.Printf("Failed to read the cookie : %v\n", err)
-	}
-	fmt.Println("We've reached home")
-	fmt.Println(cookie.Value)
-	user, _ := session.User_with_sessionid(cookie.Value)
-	fmt.Printf("Use position is %v\n", user)
-	if user.Position == "recipe" {
-		utility.TemplateRendering(w, "./staff/templates/recipient.html")
-		fmt.Println("We've reached reci home")
-	} else if user.Position == "storekeeper" {
-		fmt.Println("We've reached ware home")
-		utility.TemplateRendering(w, "./staff/templates/warehouse.html")
+	if utility.Is_user_logged(r) {
+		cookie, err := r.Cookie("sessionid")
+		if err == nil {
+			user, err := session.User_with_sessionid(cookie.Value)
+			if err == nil {
+				if user.Position == "recipient" {
+					utility.TemplateRendering(w, "./staff/templates/recipient.html")
+				} else if user.Position == "storekeeper" {
+					utility.TemplateRendering(w, "./staff/templates/warehouse.html")
+				} else {
+					fmt.Printf("Unauthorized user \n")
+				}
+			} else {
+				fmt.Printf("failed to get the user with the sessionid %v\n", err)
+			}
+		} else {
+			fmt.Printf("Failed to get the cookie : %v\n", err)
+		}
+	} else {
+		fmt.Printf("User is not logged in!\n")
+		http.Redirect(w, r, "/login", 302)
 	}
 }
 
-func Create_staff(name string, family string, staffid string, position string, password string) {
+func Create_staff(w http.ResponseWriter, r *http.Request, name string, family string, staffid string, position string, password string) error {
+	if !utility.Is_user_logged() {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return session.User_not_logged_in_error
+	}
+
 	database, err := databasetool.Connect()
-	new_uuid := uuid.New().String()
 
 	if err != nil {
-		fmt.Printf("Failed to connect to the database : %v\n", err)
+		return databasetool.Database_connection_failure
 	}
 
 	defer database.Close()
 
-	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, userid, position, password) VALUES (?, ?, ?, ?, ?, ?)")
+	uuid := uuid.New().String()
+
+	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, userid, position, password) VALUES (?, ?, ?, ?, ?)")
 
 	if err != nil {
-		fmt.Printf("Failed to prepare the querry : %v\n", err)
+		return databasetool.Querry_prepration_failure
 	}
 
 	defer querry.Close()
 
-	_, err = querry.Exec(name, family, staffid, new_uuid, position, password)
+	_, err = querry.Exec(name, family, staffid, uuid, position, password)
 
 	if err != nil {
-		fmt.Printf("Failed to execute the queey : %v\n", err)
+		return databasetool.Querry_execution_failure
 	}
+
+	return nil
 }
 
-func Read_all_staff() []model.Staff {
+func Read_all_staff() ([]model.Staff, error) {
+	staff_array := []model.Staff{}
+
+	if !utility.Is_user_logged() {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return staff_array, session.User_not_logged_in_error
+	}
+
 	database, err := databasetool.Connect()
 
 	if err != nil {
-		fmt.Printf("Failed to connect to the database : %v\n", err)
+		return staff_array, databasetool.Database_connection_failure
 	}
 
 	defer database.Close()
 
-	rows, err := database.Query("SELECT * FROM staff")
-
+	rows, err := database.Query("SELECT staffid, userid, position FROM staff")
+	
 	if err != nil {
-		fmt.Printf("Failed to querry the database : %v\n", err)
+		return staff_array, databasetool.Querry_execution_failure
 	}
 
 	defer rows.Close()
 
 	staff_instance := model.Staff{}
-	staff_array := []model.Staff{}
 
 	for rows.Next() {
-		err = rows.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Position, &staff_instance.Password)
-
+		err = rows.Scan(&staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position)
+		
 		if err != nil {
-			fmt.Printf("Failed to scan rows : %v\n", err)
-			continue
+			return staff_array, databasetool.Scanning_rows_failure
 		}
 
 		staff_array = append(staff_array, staff_instance)
 	}
 
-	return staff_array
+	return staff_array, nil
 }
 
 func Get_staff(staffid string, password string) (model.Staff, error) {
+	if !utility.Is_user_logged(){
+		http.Redirect(w, r, "/login", http.StatusFound)
+	}
+	
 	database, err := databasetool.Connect()
 
 	if err != nil {
