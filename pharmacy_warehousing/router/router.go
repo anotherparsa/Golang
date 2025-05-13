@@ -5,34 +5,43 @@ import (
 	"PharmacyWarehousing/drugs"
 	"PharmacyWarehousing/login"
 	"PharmacyWarehousing/staff"
+	"fmt"
 	"net/http"
 	"strings"
 )
 
-func RoutingHandler(w http.ResponseWriter, r *http.Request) {
-	UrlPath := r.URL.Path
+func Routing(w http.ResponseWriter, r *http.Request) {
+	url_path := r.URL.Path
 
-	if UrlPath == "/home" || UrlPath == "/" {
-		staff.Staff_home_page_handler(w, r)
-	} else if strings.HasPrefix(UrlPath, "/login") {
-		if UrlPath == "/login" {
-			login.LoginPageHandler(w, r)
+	if strings.HasPrefix(url_path, "/staff") {
+		if url_path == "/staff/home" || url_path == "/staff" {
+			staff.Staff_home_page(w, r)
+		} else if url_path == "/staff/login" {
+			login.Login_page(w, r)
+		} else if url_path == "/staff/loginprocessor" {
+			login.Login_processor(w, r)
 		} else {
-			login.LoginHandler(w, r)
+			fmt.Fprintf(w, "404 page not found")
 		}
-	} else if strings.HasPrefix(UrlPath, "/admin") {
-		if UrlPath == "/admin" || UrlPath == "/admin/home" {
-			admin.Admin_home_page_handler(w, r)
-		} else if UrlPath == "/admin/addstaff" {
-			admin.Admin_add_staff_page_handler(w, r)
-		} else if UrlPath == "/admin/addstaffprocess" {
+	} else if strings.HasPrefix(url_path, "/admin") {
+		if url_path == "/admin/home" || url_path == "/admin" {
+			admin.Admin_home_page(w, r)
+		} else if url_path == "/admin/addstaff" {
+			admin.Admin_add_staff_page(w, r)
+		} else if url_path == "/admin/addstaffprocessor" {
 			admin.Admin_add_staff_processor(w, r)
+		} else {
+			fmt.Fprintf(w, "404 page not found")
 		}
-	} else if strings.HasPrefix(UrlPath, "/drug") {
-		if UrlPath == "/drug/adddrug" {
-			drugs.Create_drug_page_handler(w, r)
-		} else if UrlPath == "/drug/adddrugprocessor" {
+	} else if strings.HasPrefix(url_path, "/drug") {
+		if url_path == "/drug/alldrugs" || url_path == "/drug" {
+			//
+		} else if url_path == "/drug/adddrug" {
+			drugs.Create_drug_page(w, r)
+		} else if url_path == "/drug/adddrugprocessor" {
 			drugs.Create_drug_processor(w, r)
+		}else {
+			fmt.Fprintf(w, "404 page nout fount")
 		}
 	}
 }

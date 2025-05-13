@@ -21,7 +21,7 @@ func Set_session(w http.ResponseWriter, sessionid string, userid string) {
 }
 
 func Create_session(userid string, sessionid string) {
-	database, err := databasetool.Connect()
+	database, err := databasetool.Connect_to_database()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)
@@ -44,7 +44,7 @@ func Create_session(userid string, sessionid string) {
 }
 
 func User_with_sessionid(sessionid string) (model.Staff, error) {
-	database, err := databasetool.Connect()
+	database, err := databasetool.Connect_to_database()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)

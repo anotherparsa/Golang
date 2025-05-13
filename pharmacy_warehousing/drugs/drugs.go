@@ -8,18 +8,18 @@ import (
 	"net/http"
 )
 
-func Create_drug_page_handler(w http.ResponseWriter, r *http.Request) {
-	utility.TemplateRendering(w, "./drugs/templates/adddrug.html")
+func Create_drug_page(w http.ResponseWriter, r *http.Request) {
+	utility.Render_template(w, "./drugs/templates/adddrug.html")
 }
 
 func Create_drug_processor(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	Create_drug(r.PostForm.Get("name"), r.PostForm.Get("drugid"), r.PostForm.Get("company"), r.PostForm.Get("price"), r.PostForm.Get("stock"))
-	http.Redirect(w, r, "/admin/home", 302)
+	http.Redirect(w, r, "/admin/home", http.StatusFound)
 }
 
 func Create_drug(name string, drugid string, company string, price string, stock string) {
-	database, err := databasetool.Connect()
+	database, err := databasetool.Connect_to_database()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)
@@ -43,7 +43,7 @@ func Create_drug(name string, drugid string, company string, price string, stock
 }
 
 func Read_all_drug() []model.Drug {
-	database, err := databasetool.Connect()
+	database, err := databasetool.Connect_to_database()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database : %v\n", err)

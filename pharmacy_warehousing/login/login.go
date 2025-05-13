@@ -10,11 +10,11 @@ import (
 	"github.com/google/uuid"
 )
 
-func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
-	utility.TemplateRendering(w, "./login/templates/login.html")
+func Login_page(w http.ResponseWriter, r *http.Request) {
+	utility.Render_template(w, "./login/templates/login.html")
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func Login_processor(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	staff, err := staff.Get_staff(r.PostForm.Get("staffid"), r.PostForm.Get("password"))
@@ -25,7 +25,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		new_uuid := uuid.New().String()
 		session.Set_session(w, new_uuid, staff.Userid)
-		http.Redirect(w, r, "/home", 302)
+		http.Redirect(w, r, "/staff/home", 302)
 	}
 
 }
