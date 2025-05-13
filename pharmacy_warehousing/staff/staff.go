@@ -28,6 +28,7 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		fmt.Printf("Failed to get the cookie : %v\n", err)
+		http.Redirect(w, r, "/staff/login", http.StatusFound)
 	}
 }
 
