@@ -6,7 +6,9 @@ import (
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
 	"fmt"
+	"math/rand/v2"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 )
@@ -28,6 +30,8 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 				utility.Render_template(w, "./staff/templates/recipient.html")
 			} else if user.Position == "storekeeper" {
 				utility.Render_template(w, "./staff/templates/warehouse.html")
+			} else if user.Position == "admin" {
+				utility.Render_template(w, "./admin/templates/admin.html")
 			} else {
 				fmt.Printf("Unauthorized user \n")
 			}
@@ -41,7 +45,20 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 }
 
 // staff
-func Create_staff(name string, family string, staffid string, userid string, position string, password string) error {
+
+func Create_staff_record(name string, family string, position string, password string) error {
+	random_staffid_postfix := strconv.Itoa(rand.IntN(99999))
+	var random_staffid string
+	if position == "recipient" {
+		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
+	} else if position == "storekeeper" {
+		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
+	} else if position == "admin" {
+		random_staffid = fmt.Sprintf("a%v", random_staffid_postfix)
+	}
+
+	random_userid := uuid.New().String()
+
 	database, err := databasetool.Connect_to_database()
 
 	if err != nil {
@@ -49,8 +66,6 @@ func Create_staff(name string, family string, staffid string, userid string, pos
 	}
 
 	defer database.Close()
-
-	uuid := uuid.New().String()
 
 	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, userid, position, password) VALUES (?, ?, ?, ?, ?, ?)")
 
@@ -60,7 +75,7 @@ func Create_staff(name string, family string, staffid string, userid string, pos
 
 	defer querry.Close()
 
-	_, err = querry.Exec(name, family, staffid, uuid, position, password)
+	_, err = querry.Exec(name, family, random_staffid, random_userid, position, password)
 
 	if err != nil {
 		return err

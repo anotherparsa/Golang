@@ -3,12 +3,11 @@ package admin
 import (
 	"PharmacyWarehousing/staff"
 	"PharmacyWarehousing/utility"
+	"bufio"
 	"fmt"
-	"math/rand"
 	"net/http"
-	"strconv"
-
-	"github.com/google/uuid"
+	"os"
+	"strings"
 )
 
 func Admin_home_page(w http.ResponseWriter, r *http.Request) {
@@ -28,22 +27,52 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 
 	name := r.PostForm.Get("name")
 	family := r.PostForm.Get("family")
-	random_staffid := strconv.Itoa(rand.Intn(99999))
 	position := r.PostForm.Get("position")
-	random_userid := uuid.New().String()
 	password := r.PostForm.Get("password")
 
-	if position == "recipient" {
-		random_staffid = fmt.Sprintf("r%v", random_staffid)
-	} else if position == "storekeeper" {
-		random_staffid = fmt.Sprintf("s%v", random_staffid)
-	}
-
-	err = staff.Create_staff(name, family, random_staffid, random_userid, position, password)
+	err = staff.Create_staff_record(name, family, position, password)
 
 	if err != nil {
 		fmt.Printf("Failed to create the staff : %v\n", err)
 	}
 
 	http.Redirect(w, r, "/admin/home", http.StatusFound)
+}
+
+func Create_admin_user() error {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("Name for Admin user : ")
+
+	name, err := reader.ReadString('\n')
+
+	if err != nil {
+		return err
+	}
+
+	name = strings.Replace(name, "\n", "", -1)
+
+	fmt.Println("Family for Admin user : ")
+
+	family, err := reader.ReadString('\n')
+
+	if err != nil {
+		return err
+	}
+
+	family = strings.Replace(family, "\n", "", -1)
+
+	fmt.Println("Password for Admin user : ")
+
+	password, err := reader.ReadString('\n')
+
+	if err != nil {
+		return err
+	}
+
+	password = strings.Replace(password, "\n", "", -1)
+
+	staff.Create_staff_record(name, family, "admin", password)
+
+	return err
 }
