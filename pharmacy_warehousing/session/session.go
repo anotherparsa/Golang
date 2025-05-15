@@ -3,12 +3,9 @@ package session
 import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
-	"errors"
 	"fmt"
 	"net/http"
 )
-
-var User_not_logged_in_error = errors.New("user is not logged int")
 
 func Set_session(w http.ResponseWriter, sessionid string, userid string) {
 
@@ -17,7 +14,7 @@ func Set_session(w http.ResponseWriter, sessionid string, userid string) {
 		Value: sessionid,
 		Path:  "/",
 	})
-	model.Create_session(userid, sessionid)
+	Create_session(userid, sessionid)
 }
 
 func User_with_sessionid(sessionid string) (model.Staff, error) {
@@ -64,5 +61,35 @@ func Is_user_authorized(sessionid string, position string) (model.Staff, error) 
 	} else {
 		return user, err
 	}
+
+}
+
+// session
+func Create_session(userid string, sessionid string) {
+	database, err := databasetool.Connect_to_database()
+
+	if err != nil {
+		fmt.Printf("Failed to connect to the database : %v\n", err)
+	}
+
+	defer database.Close()
+
+	querry, err := database.Prepare("INSERT INTO session (userid, sessionid) VALUES (?, ?)")
+
+	if err != nil {
+		fmt.Printf("Failed to prepare the querry : %v\n", err)
+	}
+	defer querry.Close()
+
+	_, err = querry.Exec(userid, sessionid)
+
+	if err != nil {
+		fmt.Printf("Failed to execute the querry : %v\n", err)
+	}
+}
+
+func Check_if_cookie_exists(r *http.Request, cookiename string) (string bool) {
+	_, err := r.Cookie(cookiename)
+	return err == nil
 
 }

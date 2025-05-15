@@ -12,7 +12,7 @@ import (
 )
 
 func Login_page(w http.ResponseWriter, r *http.Request) {
-	if model.Check_if_cookie_exists(r, "sessionid") {
+	if session.Check_if_cookie_exists(r, "sessionid") {
 		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	} else {
 		utility.Render_template(w, "./login/templates/login.html")
