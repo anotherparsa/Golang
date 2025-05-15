@@ -75,3 +75,26 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 	return staff_instance, err
 
 }
+
+func Is_user_authorized(w http.ResponseWriter, r *http.Request, position string) bool {
+	cookie, err := r.Cookie("sessionid")
+
+	if err != nil {
+		fmt.Printf("Failed to get the cookie : %v\n", err)
+		return false
+	}
+
+	user, err := User_with_sessionid(cookie.Value)
+
+	if err != nil {
+		fmt.Printf("Failed to get the user : %v\n", err)
+		return false
+	}
+
+	if user.Position == position {
+		return true
+	} else {
+		return false
+	}
+
+}

@@ -22,3 +22,4 @@ func Render_template(w http.ResponseWriter, path string) {
 		return
 	}
 }
+
