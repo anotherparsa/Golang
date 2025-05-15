@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"PharmacyWarehousing/staff"
+	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/utility"
 	"fmt"
 	"math/rand"
@@ -39,7 +39,7 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 		random_staffid = fmt.Sprintf("s%v", random_staffid)
 	}
 
-	err = staff.Create_staff(name, family, random_staffid, random_userid, position, password)
+	err = model.Create_staff(name, family, random_staffid, random_userid, position, password)
 
 	if err != nil {
 		fmt.Printf("Failed to create the staff : %v\n", err)

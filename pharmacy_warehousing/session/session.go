@@ -17,30 +17,7 @@ func Set_session(w http.ResponseWriter, sessionid string, userid string) {
 		Value: sessionid,
 		Path:  "/",
 	})
-	Create_session(userid, sessionid)
-}
-
-func Create_session(userid string, sessionid string) {
-	database, err := databasetool.Connect_to_database()
-
-	if err != nil {
-		fmt.Printf("Failed to connect to the database : %v\n", err)
-	}
-
-	defer database.Close()
-
-	querry, err := database.Prepare("INSERT INTO session (userid, sessionid) VALUES (?, ?)")
-
-	if err != nil {
-		fmt.Printf("Failed to prepare the querry : %v\n", err)
-	}
-	defer querry.Close()
-
-	_, err = querry.Exec(userid, sessionid)
-
-	if err != nil {
-		fmt.Printf("Failed to execute the querry : %v\n", err)
-	}
+	model.Create_session(userid, sessionid)
 }
 
 func User_with_sessionid(sessionid string) (model.Staff, error) {
@@ -76,25 +53,16 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 
 }
 
-func Is_user_authorized(w http.ResponseWriter, r *http.Request, position string) bool {
-	cookie, err := r.Cookie("sessionid")
-
-	if err != nil {
-		fmt.Printf("Failed to get the cookie : %v\n", err)
-		return false
-	}
-
-	user, err := User_with_sessionid(cookie.Value)
-
+func Is_user_authorized(sessionid string, position string) (model.Staff, error) {
+	user, err := User_with_sessionid(sessionid)
 	if err != nil {
 		fmt.Printf("Failed to get the user : %v\n", err)
-		return false
+		return user, err
 	}
-
 	if user.Position == position {
-		return true
+		return user, nil
 	} else {
-		return false
+		return user, err
 	}
 
 }
