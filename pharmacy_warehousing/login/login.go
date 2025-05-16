@@ -2,7 +2,6 @@ package login
 
 import (
 	"PharmacyWarehousing/databasetool"
-	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
 	"fmt"
@@ -43,8 +42,12 @@ func Login_processor(w http.ResponseWriter, r *http.Request) {
 		} else {
 			//authentication was successful and a session will be set
 			new_uuid := uuid.New().String()
-			session.Set_session(w, new_uuid, userid)
-			http.Redirect(w, r, "/staff/home", 302)
+			err = session.Set_session(w, new_uuid, userid)
+			if err != nil {
+				fmt.Printf("Error : %v\n", err)
+				http.Redirect(w, r, "/error", http.StatusFound)
+			}
+			http.Redirect(w, r, "/staff/home", http.StatusFound)
 		}
 	}
 
@@ -59,10 +62,9 @@ func Authenticate_user(staffid string, password string) (string, error) {
 	defer database.Close()
 	querry := "SELECT userid FROM staff WHERE staffid=? AND password=?"
 	row := database.QueryRow(querry, staffid, password)
-	staffinstance := model.Staff{}
-	err = row.Scan(&staffinstance.Userid)
+	err = row.Scan(&userid)
 	if err != nil {
 		return userid, err
 	}
-	return staffinstance.Userid, err
+	return userid, err
 }
