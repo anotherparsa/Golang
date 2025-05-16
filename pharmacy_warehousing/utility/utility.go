@@ -1,25 +1,18 @@
 package utility
 
 import (
-	"log"
 	"net/http"
 	"text/template"
 )
 
-func Render_template(w http.ResponseWriter, path string) {
+func Render_template(w http.ResponseWriter, path string) error {
 	template, err := template.ParseFiles(path)
-
 	if err != nil {
-		log.Print(err)
-		return
+		return err
 	}
-	w.WriteHeader(http.StatusOK)
-
 	err = template.Execute(w, nil)
-
 	if err != nil {
-		log.Print(err)
-		return
+		return err
 	}
+	return nil
 }
-

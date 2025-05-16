@@ -25,7 +25,7 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if strings.HasPrefix(url_path, "/admin") {
 		if url_path == "/admin/home" || url_path == "/admin" {
-			admin.Admin_home_page(w, r)
+			staff.Staff_home_page(w, r)
 		} else if url_path == "/admin/addstaff" {
 			admin.Admin_add_staff_page(w, r)
 		} else if url_path == "/admin/addstaffprocessor" {
@@ -40,8 +40,10 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			drugs.Create_drug_page(w, r)
 		} else if url_path == "/drug/adddrugprocessor" {
 			drugs.Create_drug_processor(w, r)
-		}else {
+		} else {
 			fmt.Fprintf(w, "404 page nout fount")
 		}
+	} else if strings.HasPrefix(url_path, "/error") {
+		fmt.Fprintf(w, "This is error page")
 	}
 }

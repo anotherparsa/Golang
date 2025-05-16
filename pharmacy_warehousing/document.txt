@@ -1,0 +1,35 @@
+Database name: pharmacywarehouse
+Database tables: staff, drug, session
+
+staff users are dividied into three divisions: recipient, storekeeper, admin
+
+Tables Description:
+staff: id, name, family, staffid, userid, position, password
+drug: id, name, drugid, company, price, stock
+session: id, userid, sessionid
+
+From the start:
+when the program is runned, the "Admin.Create_admin_user()(error)" is called, it gets information from the console to create an Admin user record in the database.
+if everything went fine and there are no error it passes "router.Routing()" function as handler for "/" path handle func.
+then it serves "static" directory for the "/static/" path.
+and then starts the server.
+
+Admin Part:
+this is the admin user, admin user can manage other staff which are recipients and storekeepers.
+Admin has a home page = "/admin/home" or "/admin" => "staff.Staff_home_page(w,r)()"
+add staff page = "/admin/addstaff" => "admin.Admin_add_staff_page(w,r)()"
+add staff processor = "/admin/addstaffprocessor" => "admin.Admin_add_staff_processor(w,r)()"
+
+when admin visits the "/admin/addstaff" page, first it will call "session.Is_user_authorized()(error)" to check if the sessionid in the browser,
+is associated with a user who is authorized to visit the path or not.
+if the user is authorized it will show the add staff page, if not the user will be redirected.
+in the add staff page there is a form there are four inputs for "name", "family", "position" and "initial password".
+the content of the form will be submitted to "/admin/addstaffprocessor" via POST method.
+in the "/admin/addstaffprocessor" first it will call "session.Is_user_authorized" to check if the sessionid in the browser is associated with a user who is authorized to visit the path or not.
+if the user is authorized it will parse the submited form to get the information, if user is not authorized it will be redirected.
+after parsing the form it'll get "name", "family", "position", "password" from the form.
+and with those informatoin it will create the user record in the database by calling "staff.Create_staff_record(name, family, position, password)(error)" to create the user record.
+
+
+
+
