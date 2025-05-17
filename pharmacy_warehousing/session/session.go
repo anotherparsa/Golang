@@ -7,40 +7,47 @@ import (
 	"net/http"
 )
 
-//sets a session with sessionid and userid passed to it and returns an error
 func Set_session(w http.ResponseWriter, sessionid string, userid string) error {
+	//setting the cookie on the browser
 	http.SetCookie(w, &http.Cookie{
 		Name:  "sessionid",
 		Value: sessionid,
 		Path:  "/",
 	})
-	err := Create_session(userid, sessionid)
+	//calling the function to create the session record in the database
+	err := Create_session_record(userid, sessionid)
 	return err
 }
 
-//creates session record in the database with userid and sessionid
-func Create_session(userid string, sessionid string) error {
+func Create_session_record(userid string, sessionid string) error {
+	//connecting to the database
 	database, err := databasetool.Connect_to_database()
+	//error in connecting to the database
 	if err != nil {
 		return err
 	}
 	defer database.Close()
+	//preparing the querry
 	querry, err := database.Prepare("INSERT INTO session (userid, sessionid) VALUES (?, ?)")
+	//error in preparing the querry
 	if err != nil {
 		return err
 	}
 	defer querry.Close()
+	//executing the querry
 	_, err = querry.Exec(userid, sessionid)
+	//error in executing the querry
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-//returns the user associated with that session id and returns with an instance of the staff and error
 func User_with_sessionid(sessionid string) (model.Staff, error) {
+	//connecting to the database
 	database, err := databasetool.Connect_to_database()
 	staff_instance := model.Staff{}
+	//error in connecting to the database
 	if err != nil {
 		return staff_instance, err
 	}
@@ -50,7 +57,7 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 	row := database.QueryRow(querry, sessionid)
 	var userid string
 	err = row.Scan(&userid)
-
+	//error in scanning the row
 	if err != nil {
 		return staff_instance, err
 	}
@@ -58,19 +65,20 @@ func User_with_sessionid(sessionid string) (model.Staff, error) {
 	querry = "SELECT staffid, userid, position FROM staff WHERE userid=?"
 	row = database.QueryRow(querry, userid)
 	err = row.Scan(&staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position)
+	//error in scanning the row
 	if err != nil {
 		return staff_instance, err
 	}
 	return staff_instance, err
 }
 
-//checks if a specific cookie exist on the browser or not and returns a boolian
+// checks if a specific cookie exist on the browser or not and returns a boolian
 func Check_if_cookie_exists(r *http.Request, cookiename string) bool {
 	_, err := r.Cookie(cookiename)
 	return err == nil
 }
 
-//checks if the user is authorized to access that path or not and returns an error
+// checks if the user is authorized to access that path or not and returns an error
 func Is_user_authorized(r *http.Request, position string) error {
 	//gets the sessionid cookie
 	cookie, err := r.Cookie("sessionid")

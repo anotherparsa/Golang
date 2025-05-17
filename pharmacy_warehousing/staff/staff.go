@@ -2,7 +2,6 @@ package staff
 
 import (
 	"PharmacyWarehousing/databasetool"
-	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
 	"fmt"
@@ -81,38 +80,4 @@ func Create_staff_record(name string, family string, position string, password s
 		return err
 	}
 	return nil
-}
-
-func Read_all_staff() ([]model.Staff, error) {
-	staff_array := []model.Staff{}
-
-	database, err := databasetool.Connect_to_database()
-
-	if err != nil {
-		return staff_array, err
-	}
-
-	defer database.Close()
-
-	rows, err := database.Query("SELECT staffid, userid, position FROM staff")
-
-	if err != nil {
-		return staff_array, err
-	}
-
-	defer rows.Close()
-
-	staff_instance := model.Staff{}
-
-	for rows.Next() {
-		err = rows.Scan(&staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position)
-
-		if err != nil {
-			return staff_array, err
-		}
-
-		staff_array = append(staff_array, staff_instance)
-	}
-
-	return staff_array, nil
 }

@@ -11,6 +11,8 @@ import (
 )
 
 func Routing(w http.ResponseWriter, r *http.Request) {
+	//routes are divided mainly into 3 divisions
+	//admin, staff, drug
 	url_path := r.URL.Path
 	if url_path == "/" {
 		staff.Staff_home_page(w, r)
