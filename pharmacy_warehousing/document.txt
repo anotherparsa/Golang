@@ -156,3 +156,92 @@ if they are authorized it will parse the form and get "drugname", "drugid", "com
 
 
 
+
+
+
+Routes:
+general route
+"/" => staff.Staff_home_page(w, r)
+"/error" => temporary
+
+staff routes:
+"/staff/home" or "/staff" => staff.Staff_home_page(w, r)
+"/staff/login" => login.Login_page(w, r)
+"/staff/loginprocessor" => login.Login_processor(w, r)
+
+admin routes:
+"/admin/home" or "/admin" => staff.Staff_home_page(w, r)
+"/admin/addstaff" => admin.Admin_add_staff_page(w, r)
+"/admin/addstaffprocessor" => admin.Admin_add_staff_processor(w, r)
+
+drug routes:
+"/drug/alldrugs" or "/drug" => //
+"/drug/adddrug" => drugs.Create_drug_page(w, r)
+"/drug/adddrugprocessor" => drugs.Create_drug_processor(w, r)
+
+
+
+Todo:
+login process +{
+authenticating the user with staffid and password+
+setting session +
+}
+staff home page+
+
+add staff page+
+
+add staff process -{
+store password in hashed format
+}
+
+add drug page+
+
+add drug process +
+
+searching for drugs-
+
+see all drugs-
+
+manage and modify drugs-
+
+manage and modify staff-
+
+authorization of users and pathes-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
