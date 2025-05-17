@@ -55,7 +55,7 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 }
 
 func Create_staff_record(name string, family string, position string, password string) error {
-	random_staffid_postfix := strconv.Itoa(rand.IntN(99999))
+	random_staffid_postfix := strconv.Itoa(rand.IntN(99999-10000) + 10000)
 	var random_staffid string
 	if position == "recipient" {
 		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
