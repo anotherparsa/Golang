@@ -12,8 +12,9 @@ import (
 
 func Routing(w http.ResponseWriter, r *http.Request) {
 	url_path := r.URL.Path
-
-	if strings.HasPrefix(url_path, "/staff") {
+	if url_path == "/" {
+		staff.Staff_home_page(w, r)
+	} else if strings.HasPrefix(url_path, "/staff") {
 		if url_path == "/staff/home" || url_path == "/staff" {
 			staff.Staff_home_page(w, r)
 		} else if url_path == "/staff/login" {

@@ -24,7 +24,6 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("sessionid")
 	if err == nil {
 		//getting the user associated with that sessionid
-		fmt.Println("We've reched here")
 		user, err := session.User_with_sessionid(cookie.Value)
 		if err == nil {
 			//showing different home pages according to the positions
@@ -47,11 +46,11 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("Unauthorized user \n")
 			}
 		} else {
-			fmt.Printf("Error : %v\n", err)
+			fmt.Printf("Error 4: %v\n", err)
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
 	} else {
-		fmt.Printf("Error : %v\n", err)
+		fmt.Printf("Error 5: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
 }
@@ -62,7 +61,7 @@ func Create_staff_record(name string, family string, position string, password s
 	if position == "recipient" {
 		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
 	} else if position == "storekeeper" {
-		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
+		random_staffid = fmt.Sprintf("s%v", random_staffid_postfix)
 	} else if position == "admin" {
 		random_staffid = fmt.Sprintf("a%v", random_staffid_postfix)
 	}

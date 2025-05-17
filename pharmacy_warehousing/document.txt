@@ -83,12 +83,39 @@ error. after the user was authenticated, a new uuid will be generated to act as 
 sessionid cookie and create the session record with that "sessionid" and "userid" and then the user will be redirected to "/staff/home"
 
 
+Staff Part:
 
+staff are divided into three divisions: Admin, Recipient, Storeekeper and their home page path is the same which is "/staff/home" or "/staff/"
 
+staff home page = "/staff/home" or "/staff" => staff.Staff_home_page(w,r)
 
+first it will check for the session id to make sure the user is logged in by calling "session.Check_if_cookie_exist(w,r)(bool)" and if there was no cookie named "sessionid"
 
+the user will be redirected to "/staff/login" path.
 
+if everything went fine, it will take the cookie, and get the user with that associated session id.
 
+depending on the position of the logged user, their home page will be shown.
+
+Drug Part:
+
+in the staff division, only "storekeeper" is authorized to modify drugs.
+
+"storekeeper" has an add drug button on their home page. which is a link to "/drug/adddrug".
+
+add drug page = "/drug/adddrug" => "drugs.Create_drug_page(w,r)"
+
+add drug processor = "/drug/adddrugprocessor" => "drugs.Create_drug_processor(w,r)
+
+when user visits the "/drug/adddrug" path the "drugs.Create_drug_page(w,r)" handler will be called.
+first it will check if the user is authorized to access to that path or not, which means their position must be "storekeeper", if user is not authorized they will be redirected.
+if they are authorized the add drug page will be shown.
+in the add drug page there is a form with five inputs which are for "drugname", "drugid", "company", "price", "stock"
+and the form content will be submitted to "/drug/adddrugprocessor" path via POST.
+when it reached "/drug/adddrugprocessor" path the "drugs.Create_drug_processor(w,r) will be called.
+first it will check if the user is authorized to access the path or not.
+if they are authorized it will parse the form and get "drugname", "drugid", "company", "price", "stock" and create the drug record in the database by calling 
+"drugs.Create_drug_record(drugname, drugid, company, price, stock)()"
 
 
 
