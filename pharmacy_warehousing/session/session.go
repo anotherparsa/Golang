@@ -4,6 +4,7 @@ import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -37,6 +38,29 @@ func Create_session_record(userid string, sessionid string) error {
 	//executing the querry
 	_, err = querry.Exec(userid, sessionid)
 	//error in executing the querry
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Delete_session_record(sessionid string) error {
+	//connecting to the database
+	database, err := databasetool.Connect_to_database()
+	//error in connecting to the database
+	if err != nil {
+		return err
+	}
+	defer database.Close()
+	//preparing the querry
+	querry, err := database.Prepare("DELETE FROM session WHERE sessionid=?")
+	//error in preparing the querry
+	if err != nil {
+		return err
+	}
+	defer querry.Close()
+	//executing the querry
+	_, err = querry.Exec(sessionid)
 	if err != nil {
 		return err
 	}
@@ -95,5 +119,28 @@ func Is_user_authorized(r *http.Request, position string) error {
 		return nil
 	} else {
 		return errors.New("user not authorized")
+	}
+}
+
+func User_logout(w http.ResponseWriter, r *http.Request) {
+	if !Check_if_cookie_exists(r, "sessionid") {
+		http.Redirect(w, r, "/staff/login", http.StatusFound)
+	} else {
+		cookie, err := r.Cookie("sessionid")
+		if err != nil {
+			fmt.Printf("Error 25: %v\n", err)
+			http.Redirect(w, r, "/error", http.StatusFound)
+		}
+		err = Delete_session_record(cookie.Value)
+		if err != nil {
+			fmt.Printf("Error 26: %v\n", err)
+			http.Redirect(w, r, "/error", http.StatusFound)
+		}
+		http.SetCookie(w, &http.Cookie{
+			Name:   "sessionid",
+			MaxAge: -1,
+			Path:   "/",
+		})
+		http.Redirect(w, r, "/staff/login", http.StatusFound)
 	}
 }

@@ -192,26 +192,31 @@ Login_processor -> Check_if_cookie_exists, Authenticate_user, Set_session
 Staff_home_page -> Check_if_cookie_exists, User_with_sessionid, Render_template
 
 lvl2:
-
-lvl3:
-Connect_to_database -> *
-Check_if_cookie_exists -> * 
-Render_template -> *
-
-
-
-Create_admin_user -> Create_staff_record
-
-
-
 Create_drug_record -> Connect_to_database
-
+User_with_sessionid -> Connect_to_database
 Set_session -> Create_session_record
 Create_session_record -> Connect_to_database
-User_with_sessionid -> Connect_to_database
+Create_admin_user -> Create_staff_record
+Create_staff_record -> Connect_to_database
+
+lvl3:
+Connect_to_database -> * +
+Check_if_cookie_exists -> * +
+Render_template -> * +
+
+
+
+
+
+
+
+
+
+
+
 Is_user_authorized -> User_with_sessionid
 
-Create_staff_record -> Connect_to_database
+
 Authenticate_user -> Connect_to_database
 
 

@@ -4,6 +4,7 @@ import (
 	"PharmacyWarehousing/admin"
 	"PharmacyWarehousing/drugs"
 	"PharmacyWarehousing/login"
+	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/staff"
 	"fmt"
 	"net/http"
@@ -23,6 +24,8 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			login.Login_page(w, r)
 		} else if url_path == "/staff/loginprocessor" {
 			login.Login_processor(w, r)
+		} else if url_path == "/staff/logout" {
+			session.User_logout(w, r)
 		} else {
 			fmt.Fprintf(w, "404 page not found")
 		}
