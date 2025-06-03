@@ -2,6 +2,7 @@ package staff
 
 import (
 	"PharmacyWarehousing/databasetool"
+	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
 	"fmt"
@@ -11,6 +12,10 @@ import (
 
 	"github.com/google/uuid"
 )
+
+type dataToSend struct {
+	Staff []model.Staff
+}
 
 func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 	err := session.Is_user_authorized(r, []string{"admin", "recipient", "storekeeper"})
@@ -78,4 +83,50 @@ func Create_staff_record(name string, family string, position string, password s
 		return err
 	}
 	return nil
+}
+
+func All_staff_page(w http.ResponseWriter, r *http.Request) {
+	err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		fmt.Printf("Error 101 %v\n", err)
+		http.Redirect(w, r, "/staff/login", http.StatusFound)
+	}
+	staff_array, err := All_staff()
+	if err != nil {
+		fmt.Printf("Error 102 %v\n", err)
+	}
+	data := dataToSend{Staff: staff_array}
+	err = utility.Render_template(w, "./admin/templates/allstaff.html", data)
+	if err != nil {
+		fmt.Printf("Error 103 %v\n", err)
+	}
+}
+
+func All_staff() ([]model.Staff, error) {
+	staff_instance := model.Staff{}
+	staff_array := []model.Staff{}
+	database, err := databasetool.Connect_to_database()
+	if err != nil {
+		fmt.Printf("Error 104 %v\n", err)
+		return staff_array, err
+	}
+	defer database.Close()
+	rows, err := database.Query("SELECT * FROM staff")
+	if err != nil {
+		fmt.Printf("Error 105 %v\n", err)
+		return staff_array, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position, &staff_instance.Password)
+		if err != nil {
+			fmt.Printf("Error 106 %v\n", err)
+			continue
+		}
+		staff_array = append(staff_array, staff_instance)
+	}
+	if rows.Err() != nil {
+		return staff_array, err
+	}
+	return staff_array, err
 }

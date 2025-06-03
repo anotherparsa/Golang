@@ -3,21 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME-STOREKEEPER</title>
-    <link rel="stylesheet" href="/static/pharmacystyle.css">
-    <link rel="icon" type="image" href="/static/form.jpg">
+    <title>صفحه داروخانه</title>
+    <link rel="stylesheet" href="/static/stylestyle.css">
 </head>
 <body>
-    <form action="" target="_blank">
-       
-            <a href="search.html"  target="_blank" class="STOREKEEPER">جست‌وجو</a>
-                <a href="/drug/adddrug" target="_blank" class="STOREKEEPER">اضافه کردن</a>
-
-                <a href="/drug/alldrugs"target="_blank" class="STOREKEEPER">کل دارو</a>
-
-                <a href="delete.html" target="_blank" class="STOREKEEPER">حذف دارو</a>
-                        <a href="/staff/logout" class="STOREKEEPER"> خروج از حساب </a>
-                
+    <a href="/staff/logout" class="logout">خروج از حساب کاربری</a>
+    <form action="" class="search-form">
+        <label for="name">نام دارو :</label>
+        <input type="text" id="name" name="name" placeholder="نام دارو">
+        <button type="submit">جست‌وجو</button>
     </form>
+    <a href="/drug/alldrugs" class="med-list">مدیریت دارو ها</a>
+    <a href="/drug/adddrug" class="med-list">افزودن دارو</a>
 </body>
 </html>

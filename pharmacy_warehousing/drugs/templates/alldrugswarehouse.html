@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recipient Drug List</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <h1>لیست دارو های موجود در انبار</h1>
+    <table class="drug-list">
+        <thead>
+            <tr>
+                <th>نام دارو</th>
+                <th>کد دارو</th>
+                <th>شرکت سازنده</th>
+                <th>قیمت</th>
+                <th>موجودی</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Drugs}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Drugid}}</td>
+                <td>{{.Company}}</td>
+                <td>{{.Price}}</td>
+                <td>{{.Stock}}</td>
+                <td>
+                <button class="edit-button">ویرایش</button>
+                <button class="delete-button">حذف</button>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    
+    <a href="/staff/home" class="return-button">Return</a>
+</body>
+</html>
+

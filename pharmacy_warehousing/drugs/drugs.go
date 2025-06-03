@@ -117,21 +117,44 @@ func All_drugs() ([]model.Drug, error) {
 }
 
 func All_drugs_page(w http.ResponseWriter, r *http.Request) {
-	err := session.Is_user_authorized(r, []string{"storekeeper, recipient"})
+	err := session.Is_user_authorized(r, []string{"recipient", "storekeeper"})
 	if err != nil {
-		fmt.Printf("Error 40 %v\n", err)
+		fmt.Printf("Error %v\n", err)
 		http.Redirect(w, r, "/staff/login", http.StatusFound)
 	}
-	Drugs_array, err := All_drugs()
-	data := dataToSend{Drugs: Drugs_array}
-	if err != nil {
-		fmt.Printf("Error 54 %v\n", err)
+	cookie, err := r.Cookie("sessionid")
+	if err == nil {
+		//getting the user associated with that sessionid
+		user, err := session.User_with_sessionid(cookie.Value)
+		if err == nil {
+			//showing different home pages according to the positions
+			Drugs_array, err := All_drugs()
+			data := dataToSend{Drugs: Drugs_array}
+			if err != nil {
+				fmt.Printf("Error 54 %v\n", err)
+			}
+			if user.Position == "recipient" {
+				err = utility.Render_template(w, "./drugs/templates/alldrugsrecipient.html", data)
+				if err != nil {
+					fmt.Printf("Error1 : %v\n", err)
+				}
+			} else if user.Position == "storekeeper" {
+				err = utility.Render_template(w, "./drugs/templates/alldrugswarehouse.html", data)
+				if err != nil {
+					fmt.Printf("Error2 : %v\n", err)
+				}
+			} else {
+				fmt.Printf("Unauthorized user \n")
+			}
+		} else {
+			fmt.Printf("Error 4: %v\n", err)
+			http.Redirect(w, r, "/error", http.StatusFound)
+		}
+	} else {
+		fmt.Printf("Error 5: %v\n", err)
+		http.Redirect(w, r, "/error", http.StatusFound)
 	}
-	fmt.Println(Drugs_array)
-	err = utility.Render_template(w, "./drugs/templates/alldrugs.html", data)
-	if err != nil {
-		fmt.Printf("Error 55 %v\n", err)
-	}
+
 }
 
 /*

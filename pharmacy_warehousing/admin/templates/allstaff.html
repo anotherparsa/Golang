@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Recipient Drug List</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <h1>لیست کارمندان</h1>
+    <table class="drug-list">
+        <thead>
+            <tr>
+                <th>نام </th>
+                <th>نام خانوادگی</th>
+                <th>شماره پرسنلی</th>
+                <th>سمت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Staff}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Family}}</td>
+                <td>{{.Staffid}}</td>
+                <td>{{.Position}}</td>
+                <td>
+                <button class="edit-button">ویرایش</button>
+                <button class="delete-button">حذف</button>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    
+    <a href="/staff/home" class="return-button">Return</a>
+</body>
+</html>
+

@@ -36,6 +36,8 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			admin.Admin_add_staff_page(w, r)
 		} else if url_path == "/admin/addstaffprocessor" {
 			admin.Admin_add_staff_processor(w, r)
+		} else if url_path == "/admin/allstaff" {
+			staff.All_staff_page(w, r)
 		} else {
 			fmt.Fprintf(w, "404 page not found")
 		}

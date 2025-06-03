@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url(bcgcolor.jpg);
+    font-family: 'Vazir', sans-serif; /* Assuming "Vazir" font is available */
+    background-color: #f4f4f4; /* Background color */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full page height */
+}
+
+.logout {
+    position: absolute; /* Positioning in the top right corner */
+    top: 20px;
+    right: 20px;
+    background-color: darksalmon;
+    color: white;
+    padding: 15px 20px; /* Increased padding */
+    border-radius: 8px; /* Slightly larger border radius */
+    text-decoration: none;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    font-size: 18px; /* Increased font size */
+}
+
+.search-form {
+    display: flex;
+    flex-direction: column; /* Vertical layout */
+    align-items: center; /* Center alignment */
+    margin: 20px 0;
+}
+
+.search-form label {
+    margin-bottom: 15px; /* Increased spacing between label and input */
+    font-size: 20px; /* Increased font size for label */
+}
+
+.search-form input {
+    padding: 15px; /* Increased padding for input */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Slightly larger border radius */
+    width: 300px; /* Increased width of input */
+    font-size: 18px; /* Increased font size for input */
+}
+
+.search-form button {
+    margin-top: 15px; /* Increased spacing between input and button */
+    padding: 15px 20px; /* Increased padding for button */
+    background-color: darksalmon;
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slightly larger border radius */
+    cursor: pointer;
+    font-size: 18px; /* Increased font size for button */
+}
+
+.search-form button:hover {
+    background-color: #c76b6b; /* Change color on hover */
+}
+
+.med-list {
+    margin-top: 30px; /* Increased spacing above the medication list link */
+    text-decoration: none;
+    background-color: rgb(0, 221, 255);
+    color: black;
+    padding: 15px 20px; /* Increased padding for link */
+    border-radius: 8px; /* Slightly larger border radius */
+    font-size: 18px; /* Increased font size for link */
+}

@@ -106,4 +106,35 @@ form {
     height: 40px;
     background-color: darksalmon;
 } 
+.storek , .doctor{
+    text-decoration: none;
+    display: block;
+    color: black;
+    font-family: "Vazir Regular";
+    padding: 70px 100px;
+    border-radius: 5px;
+    background-color: rgb(0, 221, 255);
+    border: 2px solid rgb(108, 69, 134);
+    box-shadow: 2px 4px black;
+}
+#check0 , #check2 , #check3{
+    width: 40px;   
+}
+.logout{
+    font-size: 12px;
+    text-decoration: none;
+    display: block;
+    color: black;
+    font-family: "Vazir Regular";
+    padding: 10px 10px 20px 10px;
+    margin:30px 3px 40px 20px;
+    width: 150px;
+    border-radius: 5px;
+    background-color: rgb(238, 30, 40);
+    border: 2px solid black;
+    box-shadow: 2px 4px black;
 
+}
+title{
+    font-family: "Vazir Regular";
+}

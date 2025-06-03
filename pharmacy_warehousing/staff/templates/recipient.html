@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نسخه پیچ</title>
-    <link rel="stylesheet" href="/static/pharmacystyle.css">
-    <link rel="icon" type="image" href="form.jpg">
+    <title>صفحه داروخانه</title>
+    <link rel="stylesheet" href="/static/stylestyle.css">
 </head>
 <body>
-    <form action="" target="_blank">
-       
-        <a href="search.html" class="STOREKEEPER">جست‌وجو</a>
-        <a href="allmed.html" class="STOREKEEPER">کل دارو</a>
-        <a href="/staff/logout" class="STOREKEEPER"> خروج از حساب </a>
-
-    </form>  
+    <a href="/staff/logout" class="logout">خروج از حساب کاربری</a>
+    <form action="" class="search-form">
+        <label for="name">نام دارو :</label>
+        <input type="text" id="name" name="name" placeholder="نام دارو">
+        <button type="submit">جست‌وجو</button>
+    </form>
+    <a href="/drug/alldrugs" class="med-list">لیست دارو ها</a>
 </body>
 </html>
