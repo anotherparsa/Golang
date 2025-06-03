@@ -15,7 +15,7 @@ func Login_page(w http.ResponseWriter, r *http.Request) {
 	if session.Check_if_cookie_exists(r, "sessionid") {
 		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	} else {
-		err := utility.Render_template(w, "./login/templates/login.html")
+		err := utility.Render_template(w, "./login/templates/login.html", nil)
 		if err != nil {
 			fmt.Printf("Error 20: %v\n", err)
 			http.Redirect(w, r, "/error", http.StatusFound)

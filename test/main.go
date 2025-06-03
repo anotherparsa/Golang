@@ -12,51 +12,47 @@ const (
 	db_password = "rrc3498urc38r9j999m8j"
 	db_address  = "127.0.0.1"
 	db_port     = "3306"
-	db_name     = "pharmacywarehouse"
+	db_name     = "test"
 )
 
-type Staff struct {
-	Id       string
-	Name     string
-	Family   string
-	Staffid  string
-	Position string
-	password string
-}
-
 func main() {
-	insert_staff("testname1", "testfamily1", 1, "testpos1", "testpassword1")
-	insert_staff("testname2", "testfamily2", 2, "testpos2", "testpassword2")
-	insert_staff("testname3", "testfamily3", 3, "testpos3", "testpassword3")
-	insert_staff("testname4", "testfamily4", 4, "testpos4", "testpassword4")
 
-	for i, v := range read_all_staff() {
-		fmt.Printf("The index is %v and the value is %v\n", i, v)
-	}
-
-	delete_staff(2)
-	delete_staff(1)
-
-	for i, v := range read_all_staff() {
-		fmt.Printf("The index is %v and the value is %v\n", i, v)
-	}
-
-	update_staff("staffid", "3", "staffid", "55")
-
+	//insert_testone(fmt.Sprintf("%v Data in col11", i), fmt.Sprintf("%v Data in col12", i), fmt.Sprintf("%v Data in col13", i), fmt.Sprintf("%v Data in col14", i))
+	//insert_testtwo(fmt.Sprintf("%v Data in col21", i), fmt.Sprintf("%v Data in col22", i), fmt.Sprintf("%v Data in col23", i), fmt.Sprintf("%v Data in col24", i))
+	err := insert_testone("1 data", "second data", "dfdfs", "dsf")
+	fmt.Println(err)
 }
 
-func connect() (*sql.DB, error) {
+func Connect_to_database() (*sql.DB, error) {
 	database, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", db_user, db_password, db_address, db_port, db_name))
-
 	if err != nil {
-		fmt.Printf("Error connecting to the database %v\n", err)
+		return database, err
 	}
-
 	return database, err
 }
 
-func insert_staff(name string, family string, staffid int, positions string, password string) {
-	database, err := connect()
+func insert_testone(col11 string, col12 string, col13 string, col14 string) error {
+	database, err := Connect_to_database()
+	if err != nil {
+		fmt.Println("Here 1")
+		return err
+	}
+	defer database.Close()
+	querry, err := database.Prepare("INSERT INTO testone (col11, col12, col14, col14) VALUES (?, ?, ?, ?)")
+	if err != nil {
+		fmt.Println("Here 2")
+		return err
+	}
+	defer querry.Close()
+	_, err = querry.Exec(col11, col12, col13, col14)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func insert_testtwo(col21 string, col22 string, col23 string, col24 string) {
+	database, err := Connect_to_database()
 
 	if err != nil {
 		fmt.Printf("Failed to connect to the database: %v\n", err)
@@ -64,22 +60,24 @@ func insert_staff(name string, family string, staffid int, positions string, pas
 
 	defer database.Close()
 
-	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, position, password) VALUES (?, ?, ?, ?, ?)")
+	querry, err := database.Prepare("INSERT INTO testtwo (col21, col22, col23, col24) VALUES (?, ?, ?, ?)")
 
 	if err != nil {
-		fmt.Printf("Error preparing the querry: %v\n", err)
+		fmt.Printf("Error preparing the querry 2: %v\n", err)
+		return // Exit the function if there's an error
 	}
 
 	defer querry.Close()
 
-	_, err = querry.Exec(name, family, staffid, positions, password)
+	_, err = querry.Exec(col21, col22, col23, col24)
 
 	if err != nil {
 		fmt.Printf("Error executing the querry: %v\n", err)
+		return // Exit the function if there's an error
 	}
 }
 
-func read_all_staff() []Staff {
+/*func read_all_staff()  {
 	database, err := connect()
 
 	if err != nil {
@@ -114,7 +112,7 @@ func read_all_staff() []Staff {
 		fmt.Printf("Error during the iteration %v\n", rows.Err())
 	}
 
-	return staffArray
+	//return staffArray
 
 }
 
@@ -166,3 +164,4 @@ func update_staff(condition string, conditionValue string, updatecolumn string, 
 	}
 
 }
+*/

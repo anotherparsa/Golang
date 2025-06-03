@@ -13,13 +13,11 @@ import (
 )
 
 func Staff_home_page(w http.ResponseWriter, r *http.Request) {
-	//checking to see if user already logged in or not
-	if !session.Check_if_cookie_exists(r, "sessionid") {
+	err := session.Is_user_authorized(r, []string{"admin", "recipient", "storekeeper"})
+	if err != nil {
+		fmt.Printf("Error %v\n", err)
 		http.Redirect(w, r, "/staff/login", http.StatusFound)
-		return
 	}
-	//user is logged in
-	//getting the cookie
 	cookie, err := r.Cookie("sessionid")
 	if err == nil {
 		//getting the user associated with that sessionid
@@ -27,17 +25,17 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 		if err == nil {
 			//showing different home pages according to the positions
 			if user.Position == "recipient" {
-				err = utility.Render_template(w, "./staff/templates/recipient.html")
+				err = utility.Render_template(w, "./staff/templates/recipient.html", nil)
 				if err != nil {
 					fmt.Printf("Error1 : %v\n", err)
 				}
 			} else if user.Position == "storekeeper" {
-				err = utility.Render_template(w, "./staff/templates/warehouse.html")
+				err = utility.Render_template(w, "./staff/templates/warehouse.html", nil)
 				if err != nil {
 					fmt.Printf("Error2 : %v\n", err)
 				}
 			} else if user.Position == "admin" {
-				err = utility.Render_template(w, "./admin/templates/admin.html")
+				err = utility.Render_template(w, "./admin/templates/admin.html", nil)
 				if err != nil {
 					fmt.Printf("Error 3: %v\n", err)
 				}

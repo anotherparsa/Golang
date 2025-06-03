@@ -1,27 +1,36 @@
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-
-    <title>Add Staff</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اضافه کردن دارو</title>
+    <link rel="stylesheet" href="/static/pharmacystyle.css">
+    <link rel="icon" type="image" href="form.jpg">
 </head>
 <body>
+    <a href="phar_login.html"class="logout" >خروج از حساب کاربری</a>
     <form action="/admin/addstaffprocessor" method="POST">
-        <div>
-            <p>افزودن کارمند</p>
 
-            <label for="name" >نام</label>
-            <input type="text" name="name" placeholder="نام" id="name">
-            <br>
-            <label for="family" >نام خانوادگی</label>
-            <input type="text" name="family" placeholder="نام خانوادگی" id="family">
-            <br>
-            <label for="position" >سمت</label>
-            <input type="text" name="position" placeholder="سمت کارمند" id="position">
-            <br>
-            <label for="password" >گذر واژه اولیه</label>
-            <input type="password" name="password" placeholder="گذر واژّ اولیه" id="password">
-            <br>
-            <button type="submit"> افزودن کارمند</button>
+        <div class="neme-medicine">
+            <label for="staffname">نام کارمند :</label>
+            <input type="text" id="staffname" name="staffname" placeholder="نام کارمند" >
         </div>
+        <div class="cost">
+            <label for="stafffamily">نام خانوادگی کارمند :</label>
+            <input type="text" id="stafffamily" name="stafffamily" placeholder="نام خانوادگی کارمند" >
+        </div>
+        <div class="company">
+            <label for="stafffamily">سمت  کارمند :</label>
+        <select name="position" id="position">
+            <option value="storekeeper">انبار دار</option>
+            <option value="recipient">نسخه پیچ</option>
+        </select>
+        </div>
+        <div class="count">
+            <label for="password">گذر واژه اولیه</label>
+            <input type="password" id="password" name="password" placeholder="گذر واژه اولیه">
+        </div>
+        <button type="submit" class="btn">افزودن کارمند</button>
     </form>
 </body>
 </html>

@@ -3,7 +3,6 @@ package session
 import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -103,7 +102,7 @@ func Check_if_cookie_exists(r *http.Request, cookiename string) bool {
 }
 
 // checks if the user is authorized to access that path or not and returns an error
-func Is_user_authorized(r *http.Request, position string) error {
+func Is_user_authorized(r *http.Request, authorized_positions []string) error {
 	//gets the sessionid cookie
 	cookie, err := r.Cookie("sessionid")
 	if err != nil {
@@ -115,11 +114,12 @@ func Is_user_authorized(r *http.Request, position string) error {
 		return err
 	}
 	//checks if the user's id is the same as is it should be
-	if user.Position == position {
-		return nil
-	} else {
-		return errors.New("user not authorized")
+	for _, v := range authorized_positions {
+		if user.Position == v {
+			return nil
+		}
 	}
+	return err
 }
 
 func User_logout(w http.ResponseWriter, r *http.Request) {

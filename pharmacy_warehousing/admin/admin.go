@@ -13,13 +13,13 @@ import (
 
 func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
 	//checking if the user is authorized, which means both session and their position
-	err := session.Is_user_authorized(r, "admin")
+	err := session.Is_user_authorized(r, []string{"admin"})
 	//error in authorizing the user
 	if err != nil {
 		fmt.Printf("Error 16: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
-	err = utility.Render_template(w, "./admin/templates/addstaff.html")
+	err = utility.Render_template(w, "./admin/templates/addstaff.html", nil)
 	//error in rendering the template
 	if err != nil {
 		fmt.Printf("Error 17: %v\n", err)
@@ -29,7 +29,7 @@ func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
 
 func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	//checking if the user is authorized, which means both session and their position
-	err := session.Is_user_authorized(r, "admin")
+	err := session.Is_user_authorized(r, []string{"admin"})
 	//error in authorizing the user
 	if err != nil {
 		fmt.Printf("Error : %v\n", err)
@@ -43,8 +43,8 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
 	//getting data from form
-	name := r.PostForm.Get("name")
-	family := r.PostForm.Get("family")
+	name := r.PostForm.Get("staffname")
+	family := r.PostForm.Get("stafffamily")
 	position := r.PostForm.Get("position")
 	password := r.PostForm.Get("password")
 	//creating staff record in the database
@@ -78,6 +78,6 @@ func Create_admin_user() error {
 		return err
 	}
 	password = strings.Replace(password, "\n", "", -1)
-	staff.Create_staff_record(name, family, "admin", password)
+	err = staff.Create_staff_record(name, family, "admin", password)
 	return err
 }

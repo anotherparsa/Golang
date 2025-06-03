@@ -9,7 +9,7 @@ import (
 
 const (
 	db_user     = "testuser"
-	db_password = "rrc3498urc38r9j999m8j"
+	db_password = "jwegoqj398329rhwegojldgjsldgkj"
 	db_address  = "127.0.0.1"
 	db_port     = "3306"
 	db_name     = "pharmacywarehouse"

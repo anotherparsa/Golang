@@ -5,12 +5,12 @@ import (
 	"text/template"
 )
 
-func Render_template(w http.ResponseWriter, path string) error {
+func Render_template(w http.ResponseWriter, path string, data interface{}) error {
 	template, err := template.ParseFiles(path)
 	if err != nil {
 		return err
 	}
-	err = template.Execute(w, nil)
+	err = template.Execute(w, data)
 	if err != nil {
 		return err
 	}

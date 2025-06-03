@@ -1,0 +1,105 @@
+/* Basic Body Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Container for centering and overall layout */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Page Title */
+h1 {
+    text-align: center;
+    color: #0056b3;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+/* Table Specific Styles */
+.table-responsive {
+    overflow-x: auto; /* Makes table horizontally scrollable on small screens */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Removes space between table cells */
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Header */
+thead {
+    background-color: #007bff;
+    color: white;
+}
+
+th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Table Data Rows */
+td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+/* Zebra Striping for Readability */
+tbody tr:nth-child(even) {
+    background-color: #f8f8f8; /* Light grey for even rows */
+}
+
+/* Hover effect on rows */
+tbody tr:hover {
+    background-color: #e9f5ff; /* Light blue on hover */
+    cursor: pointer;
+}
+
+/* Specific styling for 'Stock' column to align right if it's numerical */
+/* You might want to adjust text-align for numerical columns */
+th:nth-child(5), /* Stock column */
+td:nth-child(5) { /* Stock column */
+    text-align: right;
+}
+
+/* Specific styling for 'Price' column */
+th:nth-child(4), /* Price column */
+td:nth-child(4) { /* Price column */
+    text-align: right;
+    font-weight: bold;
+    color: #28a745; /* Green color for price */
+}
+
+/* Optional: Small screen adjustments */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 20px;
+        margin: 15px auto;
+    }
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    th, td {
+        padding: 8px 10px;
+    }
+}

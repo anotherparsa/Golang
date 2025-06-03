@@ -41,7 +41,7 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if strings.HasPrefix(url_path, "/drug") {
 		if url_path == "/drug/alldrugs" || url_path == "/drug" {
-			//
+			drugs.All_drugs_page(w, r)
 		} else if url_path == "/drug/adddrug" {
 			drugs.Create_drug_page(w, r)
 		} else if url_path == "/drug/adddrugprocessor" {
