@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Recipient Drug List</title>
+    <title>Drug List</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 
@@ -16,21 +16,28 @@
                 <th>شرکت سازنده</th>
                 <th>قیمت</th>
                 <th>موجودی</th>
+                {{if eq $.User.Position "storekeeper" }}
                 <th>عملیات</th>
+                {{end}}
+
             </tr>
         </thead>
         <tbody>
-            {{range .Drugs}}
+            {{range .Drug}}
             <tr>
                 <td>{{.Name}}</td>
                 <td>{{.Drugid}}</td>
                 <td>{{.Company}}</td>
                 <td>{{.Price}}</td>
                 <td>{{.Stock}}</td>
-                <td>
+
+                {{if eq $.User.Position "storekeeper" }}
+                                <td>
                 <button class="edit-button">ویرایش</button>
                 <button class="delete-button">حذف</button>
-                </td>
+                                </td>
+                {{end}}
+
             </tr>
             {{end}}
         </tbody>

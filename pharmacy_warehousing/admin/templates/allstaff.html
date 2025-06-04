@@ -24,7 +24,15 @@
                 <td>{{.Name}}</td>
                 <td>{{.Family}}</td>
                 <td>{{.Staffid}}</td>
-                <td>{{.Position}}</td>
+                {{if eq .Position "admin"}}
+                <td>ادمین</td>
+                {{else if eq .Position "storekeeper"}}
+                <td>انبار دار</td>
+                {{else if eq .Position "recipient"}}
+                <td>نسخه پیج</td>
+                {{else}}
+                <td>نا مشخض</td>
+                {{end}}
                 <td>
                 <button class="edit-button">ویرایش</button>
                 <button class="delete-button">حذف</button>

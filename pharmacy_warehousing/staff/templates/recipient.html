@@ -8,9 +8,9 @@
 </head>
 <body>
     <a href="/staff/logout" class="logout">خروج از حساب کاربری</a>
-    <form action="" class="search-form">
-        <label for="name">نام دارو :</label>
-        <input type="text" id="name" name="name" placeholder="نام دارو">
+    <form action="/drug/searchdrug" method="GET" class="search-form">
+        <label for="drugname">نام دارو :</label>
+        <input type="text" id="drugname" name="drugname" placeholder="نام دارو">
         <button type="submit">جست‌وجو</button>
     </form>
     <a href="/drug/alldrugs" class="med-list">لیست دارو ها</a>

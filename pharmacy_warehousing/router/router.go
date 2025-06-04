@@ -12,8 +12,6 @@ import (
 )
 
 func Routing(w http.ResponseWriter, r *http.Request) {
-	//routes are divided mainly into 3 divisions
-	//admin, staff, drug
 	url_path := r.URL.Path
 	if url_path == "/" {
 		staff.Staff_home_page(w, r)
@@ -48,6 +46,8 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			drugs.Create_drug_page(w, r)
 		} else if url_path == "/drug/adddrugprocessor" {
 			drugs.Create_drug_processor(w, r)
+		} else if url_path == "/drug/searchdrug" {
+			drugs.Search_result_page(w, r)
 		} else {
 			fmt.Fprintf(w, "404 page nout fount")
 		}

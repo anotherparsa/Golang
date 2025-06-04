@@ -65,63 +65,45 @@ func Delete_session_record(sessionid string) error {
 	}
 	return nil
 }
-
-func User_with_sessionid(sessionid string) (model.Staff, error) {
-	//connecting to the database
-	database, err := databasetool.Connect_to_database()
-	staff_instance := model.Staff{}
-	//error in connecting to the database
-	if err != nil {
-		return staff_instance, err
-	}
-	defer database.Close()
-	//gets the userid associated with that sessionid in session table
-	querry := "SELECT userid FROM session WHERE sessionid=?"
-	row := database.QueryRow(querry, sessionid)
-	var userid string
-	err = row.Scan(&userid)
-	//error in scanning the row
-	if err != nil {
-		return staff_instance, err
-	}
-	//gets the user associated with that userid from staff table
-	querry = "SELECT staffid, userid, position FROM staff WHERE userid=?"
-	row = database.QueryRow(querry, userid)
-	err = row.Scan(&staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position)
-	//error in scanning the row
-	if err != nil {
-		return staff_instance, err
-	}
-	return staff_instance, err
-}
-
-// checks if a specific cookie exist on the browser or not and returns a boolian
 func Check_if_cookie_exists(r *http.Request, cookiename string) bool {
 	_, err := r.Cookie(cookiename)
 	return err == nil
 }
 
-// checks if the user is authorized to access that path or not and returns an error
-func Is_user_authorized(r *http.Request, authorized_positions []string) error {
-	//gets the sessionid cookie
+func Is_user_authorized(r *http.Request, authorized_positions []string) (model.Staff, error) {
+	staff_instance := model.Staff{}
+	var userid string
 	cookie, err := r.Cookie("sessionid")
 	if err != nil {
-		return err
+		return staff_instance, err
 	}
-	//gets the user with that sessionid
-	user, err := User_with_sessionid(cookie.Value)
+	database, err := databasetool.Connect_to_database()
 	if err != nil {
-		return err
+		return staff_instance, err
 	}
-	//checks if the user's id is the same as is it should be
+	defer database.Close()
+	querry := "SELECT userid FROM session WHERE sessionid=?"
+	row := database.QueryRow(querry, cookie.Value)
+	err = row.Scan(&userid)
+	if err != nil {
+		return staff_instance, err
+	}
+	querry = "SELECT * FROM staff WHERE userid=?"
+	row = database.QueryRow(querry, userid)
+	err = row.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position, &staff_instance.Password)
+	//error in scanning the row
+	if err != nil {
+		return staff_instance, err
+	}
 	for _, v := range authorized_positions {
-		if user.Position == v {
-			return nil
+		if staff_instance.Position == v {
+			return staff_instance, err
 		}
 	}
-	return err
+	return staff_instance, err
 }
 
+// handler of "/staff/logout"
 func User_logout(w http.ResponseWriter, r *http.Request) {
 	if !Check_if_cookie_exists(r, "sessionid") {
 		http.Redirect(w, r, "/staff/login", http.StatusFound)

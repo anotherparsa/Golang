@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// handler of "/staff/login"
 func Login_page(w http.ResponseWriter, r *http.Request) {
 	//checking if user already logged
 	if session.Check_if_cookie_exists(r, "sessionid") {
@@ -23,6 +24,7 @@ func Login_page(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handler of "/staff/loginprocessor"
 func Login_processor(w http.ResponseWriter, r *http.Request) {
 	//checking if user already logged
 	if session.Check_if_cookie_exists(r, "sessionid") {
