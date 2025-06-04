@@ -95,24 +95,28 @@ func Is_user_authorized(r *http.Request, authorized_positions []string) (model.S
 
 // handler of "/staff/logout"
 func User_logout(w http.ResponseWriter, r *http.Request) {
-	if !Check_if_cookie_exists(r, "sessionid") {
-		http.Redirect(w, r, "/staff/login", http.StatusFound)
-	} else {
+	_, err := Is_user_authorized(r, []string{"admin", "recipient", "storekeeper"})
+	if err == nil {
 		cookie, err := r.Cookie("sessionid")
-		if err != nil {
-			fmt.Printf("Error 25: %v\n", err)
+		if err == nil {
+			err = Delete_session_record(cookie.Value)
+			if err == nil {
+				http.SetCookie(w, &http.Cookie{
+					Name:   "sessionid",
+					MaxAge: -1,
+					Path:   "/",
+				})
+				http.Redirect(w, r, "/staff/login", http.StatusFound)
+			} else {
+				fmt.Printf("Error 20: %v\n", err)
+				http.Redirect(w, r, "/error", http.StatusFound)
+			}
+		} else {
+			fmt.Printf("Error 20: %v\n", err)
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
-		err = Delete_session_record(cookie.Value)
-		if err != nil {
-			fmt.Printf("Error 26: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
-		}
-		http.SetCookie(w, &http.Cookie{
-			Name:   "sessionid",
-			MaxAge: -1,
-			Path:   "/",
-		})
-		http.Redirect(w, r, "/staff/login", http.StatusFound)
+	} else {
+		fmt.Printf("Error 20: %v\n", err)
+		http.Redirect(w, r, "/error", http.StatusFound)
 	}
 }
