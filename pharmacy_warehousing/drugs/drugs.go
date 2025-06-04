@@ -5,7 +5,6 @@ import (
 	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
-	"database/sql"
 	"fmt"
 	"net/http"
 )
@@ -25,6 +24,7 @@ func Create_drug_page(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
 	} else {
+		//user is not authorized
 		fmt.Printf("Error Drugs 1: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
@@ -45,14 +45,17 @@ func Create_drug_processor(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				http.Redirect(w, r, "/staff/home", http.StatusFound)
 			} else {
+				//failed to create drug record
 				fmt.Printf("Error Drugs 5: %v\n", err)
 				http.Redirect(w, r, "/error", http.StatusFound)
 			}
 		} else {
+			//failed to parse the form
 			fmt.Printf("Error Drugs 4: %v\n", err)
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
 	} else {
+		//user is not authorized
 		fmt.Printf("Error Drugs 3: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
@@ -68,9 +71,11 @@ func Create_drug_record(drugname string, drugid string, company string, price st
 			_, err = querry.Exec(drugname, drugid, company, price, stock)
 			return err
 		} else {
+			//failed to prepare the querry
 			return err
 		}
 	} else {
+		//failed to connect to the database
 		return err
 	}
 }
@@ -87,12 +92,20 @@ func All_drugs_page(w http.ResponseWriter, r *http.Request) {
 				fmt.Printf("Error Drugs 9: %v\n", err)
 				http.Redirect(w, r, "/error", http.StatusFound)
 			}
+		} else {
+			//failed to get all drugs
+			fmt.Printf("Error Drugs 4: %v\n", err)
+			http.Redirect(w, r, "/error", http.StatusFound)
 		}
+	} else {
+		//user is not authorized
+		fmt.Printf("Error Drugs 3: %v\n", err)
+		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+
 }
 
 func All_drugs() ([]model.Drug, error) {
-	drug_instance := model.Drug{}
 	drug_array := []model.Drug{}
 	database, err := databasetool.Connect_to_database()
 	if err == nil {
@@ -100,27 +113,28 @@ func All_drugs() ([]model.Drug, error) {
 		rows, err := database.Query("SELECT * FROM drug")
 		if err == nil {
 			defer rows.Close()
+			drug_instance := model.Drug{}
 			for rows.Next() {
 				err := rows.Scan(&drug_instance.Id, &drug_instance.Name, &drug_instance.Drugid, &drug_instance.Company, &drug_instance.Price, &drug_instance.Stock)
 				if err == nil {
 					drug_array = append(drug_array, drug_instance)
-				} else {
-					fmt.Printf("Error Drugs 14: %v\n", err)
-					continue
 				}
 			}
+			return drug_array, err
 		} else {
+			//failed to querry the database
 			fmt.Printf("Error Drugs 13: %v\n", err)
 			return drug_array, err
 		}
 	} else {
+		//failed to connect to the database
 		fmt.Printf("Error Drugs 12: %v\n", err)
 		return drug_array, err
 	}
-	return drug_array, err
+
 }
 
-// handler of //
+// handler of "/drug/searchdrug"
 func Search_result_page(w http.ResponseWriter, r *http.Request) {
 	user, err := session.Is_user_authorized(r, []string{"recipient", "storekeeper"})
 	if err == nil {
@@ -128,43 +142,30 @@ func Search_result_page(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(drug_name)
 		result_drug, err := Find_drug(drug_name)
 		if err == nil {
-			fmt.Println("Hey")
 			data := DataToSend{User: user, Drug: result_drug}
-			fmt.Println(data)
 			utility.Render_template(w, "./staff/templates/searchresult.html", data)
+		} else {
+			//failed to find the drug
+			fmt.Printf("Error Drugs 9: %v\n", err)
+			http.Redirect(w, r, "/error", http.StatusFound)
 		}
+	} else {
+		//user is not authorized
+		fmt.Printf("Error Drugs 9: %v\n", err)
+		http.Redirect(w, r, "/error", http.StatusFound)
 	}
 }
 
 func Find_drug(drugname string) (model.Drug, error) {
-	// Create a zero-value Drug instance
 	drug_instance := model.Drug{}
-
-	// Connect to the database
 	database, err := databasetool.Connect_to_database()
-	if err != nil {
-		fmt.Printf("Error connecting to database: %v\n", err)
+	if err == nil {
+		defer database.Close()
+		row := database.QueryRow("SELECT * FROM drug WHERE name=?", drugname)
+		err = row.Scan(&drug_instance.Id, &drug_instance.Name, &drug_instance.Drugid, &drug_instance.Company, &drug_instance.Price, &drug_instance.Stock)
 		return drug_instance, err
-	}
-	defer database.Close() // Ensure the database is closed when done
-
-	// Query for the drug
-	row := database.QueryRow("SELECT * FROM drug WHERE name=?", drugname)
-
-	// Scan the result into drug_instance
-	err = row.Scan(&drug_instance.Id, &drug_instance.Name, &drug_instance.Drugid, &drug_instance.Company, &drug_instance.Price, &drug_instance.Stock)
-
-	// Check for errors during scanning
-	if err != nil {
-		if err == sql.ErrNoRows {
-			// Drug not found
-			return drug_instance, fmt.Errorf("drug not found: %s", drugname)
-		}
-		// Log other types of errors
-		fmt.Printf("Error scanning drug: %v\n", err)
+	} else {
 		return drug_instance, err
 	}
 
-	// Return the found drug instance
-	return drug_instance, nil
 }

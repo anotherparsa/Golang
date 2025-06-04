@@ -25,6 +25,7 @@ func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
 	} else {
+		//user is not authorized
 		fmt.Printf("Error Admin 2: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
@@ -44,43 +45,19 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 			if err == nil {
 				http.Redirect(w, r, "/staff/home", http.StatusFound)
 			} else {
+				//failed to create staff record
 				fmt.Printf("Error Admin 3: %v\n", err)
 				http.Redirect(w, r, "/error", http.StatusFound)
 			}
 		} else {
+			//failed to parse form
 			fmt.Printf("Error Admin 4: %v\n", err)
 			http.Redirect(w, r, "/error", http.StatusFound)
 		}
 	} else {
+		//user is not authorized
 		fmt.Printf("Error Admin 5: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
-	}
-}
-
-func Create_admin_user() error {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("Name for Admin user : ")
-	name, err := reader.ReadString('\n')
-	if err == nil {
-		name = strings.Replace(name, "\n", "", -1)
-		fmt.Println("Family for Admin user : ")
-		family, err := reader.ReadString('\n')
-		if err == nil {
-			family = strings.Replace(family, "\n", "", -1)
-			fmt.Println("Password for Admin user : ")
-			password, err := reader.ReadString('\n')
-			if err == nil {
-				password = strings.Replace(password, "\n", "", -1)
-				err = Create_staff_record(name, family, "admin", password)
-				return err
-			} else {
-				return err
-			}
-		} else {
-			return err
-		}
-	} else {
-		return err
 	}
 }
 
@@ -103,6 +80,35 @@ func Create_staff_record(name string, family string, position string, password s
 			defer querry.Close()
 			_, err = querry.Exec(name, family, random_staffid, random_userid, position, password)
 			return err
+		} else {
+			//failed to prepare the querry
+			return err
+		}
+	} else {
+		//failed to connect to the database
+		return err
+	}
+}
+
+func Create_admin_user() error {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Name for Admin user : ")
+	name, err := reader.ReadString('\n')
+	if err == nil {
+		name = strings.Replace(name, "\n", "", -1)
+		fmt.Println("Family for Admin user : ")
+		family, err := reader.ReadString('\n')
+		if err == nil {
+			family = strings.Replace(family, "\n", "", -1)
+			fmt.Println("Password for Admin user : ")
+			password, err := reader.ReadString('\n')
+			if err == nil {
+				password = strings.Replace(password, "\n", "", -1)
+				err = Create_staff_record(name, family, "admin", password)
+				return err
+			} else {
+				return err
+			}
 		} else {
 			return err
 		}
