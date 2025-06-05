@@ -16,23 +16,17 @@ import (
 )
 
 // handler of "/admin/addstaff"
-func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
+func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) error {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err == nil {
 		err = utility.Render_template(w, "./admin/templates/addstaff.html", nil)
-		if err != nil {
-			fmt.Printf("Error Admin 1: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
-		}
-	} else {
-		//user is not authorized
-		fmt.Printf("Error Admin 2: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
+		return err
 	}
+	return err
 }
 
 // handler of "/admin/addstaffprocessor"
-func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
+func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) error {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err == nil {
 		err = r.ParseForm()
@@ -44,21 +38,11 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 			err = Create_staff_record(name, family, position, password)
 			if err == nil {
 				http.Redirect(w, r, "/staff/home", http.StatusFound)
-			} else {
-				//failed to create staff record
-				fmt.Printf("Error Admin 3: %v\n", err)
-				http.Redirect(w, r, "/error", http.StatusFound)
+				return err
 			}
-		} else {
-			//failed to parse form
-			fmt.Printf("Error Admin 4: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
 		}
-	} else {
-		//user is not authorized
-		fmt.Printf("Error Admin 5: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+	return err
 }
 
 func Create_staff_record(name string, family string, position string, password string) error {
@@ -80,14 +64,9 @@ func Create_staff_record(name string, family string, position string, password s
 			defer querry.Close()
 			_, err = querry.Exec(name, family, random_staffid, random_userid, position, password)
 			return err
-		} else {
-			//failed to prepare the querry
-			return err
 		}
-	} else {
-		//failed to connect to the database
-		return err
 	}
+	return err
 }
 
 func Create_admin_user() error {
@@ -106,13 +85,8 @@ func Create_admin_user() error {
 				password = strings.Replace(password, "\n", "", -1)
 				err = Create_staff_record(name, family, "admin", password)
 				return err
-			} else {
-				return err
 			}
-		} else {
-			return err
 		}
-	} else {
-		return err
 	}
+	return err
 }

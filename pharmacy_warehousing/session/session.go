@@ -4,7 +4,6 @@ import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
 )
@@ -28,13 +27,9 @@ func Create_session_record(userid string, sessionid string) error {
 			defer querry.Close()
 			_, err = querry.Exec(userid, sessionid)
 			return err
-		} else {
-			return err
 		}
-	} else {
-		return err
 	}
-
+	return err
 }
 
 func Delete_session_record(sessionid string) error {
@@ -46,13 +41,11 @@ func Delete_session_record(sessionid string) error {
 			defer querry.Close()
 			_, err = querry.Exec(sessionid)
 			return err
-		} else {
-			return err
 		}
-	} else {
-		return err
 	}
+	return err
 }
+
 func Check_if_cookie_exists(r *http.Request, cookiename string) bool {
 	_, err := r.Cookie(cookiename)
 	return err == nil
@@ -79,22 +72,15 @@ func Is_user_authorized(r *http.Request, authorized_positions []string) (model.S
 					} else {
 						return staff_instance, errors.New("")
 					}
-				} else {
-					return staff_instance, err
 				}
-			} else {
-				return staff_instance, err
 			}
-		} else {
-			return staff_instance, err
 		}
-	} else {
-		return staff_instance, err
 	}
+	return staff_instance, errors.New("")
 }
 
 // handler of "/staff/logout"
-func User_logout(w http.ResponseWriter, r *http.Request) {
+func User_logout(w http.ResponseWriter, r *http.Request) error {
 	_, err := Is_user_authorized(r, []string{"admin", "recipient", "storekeeper"})
 	if err == nil {
 		cookie, err := r.Cookie("sessionid")
@@ -107,16 +93,8 @@ func User_logout(w http.ResponseWriter, r *http.Request) {
 					Path:   "/",
 				})
 				http.Redirect(w, r, "/staff/login", http.StatusFound)
-			} else {
-				fmt.Printf("Error 20: %v\n", err)
-				http.Redirect(w, r, "/error", http.StatusFound)
 			}
-		} else {
-			fmt.Printf("Error 20: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
 		}
-	} else {
-		fmt.Printf("Error 20: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+	return err
 }

@@ -15,23 +15,17 @@ type DataToSend struct {
 }
 
 // handler of "/drug/adddrug" {
-func Create_drug_page(w http.ResponseWriter, r *http.Request) {
+func Create_drug_page(w http.ResponseWriter, r *http.Request) error {
 	_, err := session.Is_user_authorized(r, []string{"storekeeper"})
 	if err == nil {
 		err = utility.Render_template(w, "./drugs/templates/adddrug.html", nil)
-		if err != nil {
-			fmt.Printf("Error Drugs 2: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
-		}
-	} else {
-		//user is not authorized
-		fmt.Printf("Error Drugs 1: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
+		return err
 	}
+	return err
 }
 
 // handler of "/drug/adddrugprocessor"
-func Create_drug_processor(w http.ResponseWriter, r *http.Request) {
+func Create_drug_processor(w http.ResponseWriter, r *http.Request) error {
 	_, err := session.Is_user_authorized(r, []string{"storekeeper"})
 	if err == nil {
 		err = r.ParseForm()
@@ -44,21 +38,11 @@ func Create_drug_processor(w http.ResponseWriter, r *http.Request) {
 			err = Create_drug_record(drug_name, drug_id, drug_company, drug_price, drug_stock)
 			if err == nil {
 				http.Redirect(w, r, "/staff/home", http.StatusFound)
-			} else {
-				//failed to create drug record
-				fmt.Printf("Error Drugs 5: %v\n", err)
-				http.Redirect(w, r, "/error", http.StatusFound)
+				return nil
 			}
-		} else {
-			//failed to parse the form
-			fmt.Printf("Error Drugs 4: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
 		}
-	} else {
-		//user is not authorized
-		fmt.Printf("Error Drugs 3: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+	return err
 }
 
 func Create_drug_record(drugname string, drugid string, company string, price string, stock string) error {
@@ -70,38 +54,23 @@ func Create_drug_record(drugname string, drugid string, company string, price st
 			defer querry.Close()
 			_, err = querry.Exec(drugname, drugid, company, price, stock)
 			return err
-		} else {
-			//failed to prepare the querry
-			return err
 		}
-	} else {
-		//failed to connect to the database
-		return err
 	}
+	return err
 }
 
 // handler of "/drug/alldrugs" and "/drug"
-func All_drugs_page(w http.ResponseWriter, r *http.Request) {
+func All_drugs_page(w http.ResponseWriter, r *http.Request) error {
 	User, err := session.Is_user_authorized(r, []string{"recipient", "storekeeper"})
 	if err == nil {
 		Drugs_array, err := All_drugs()
 		if err == nil {
 			data := DataToSend{Drug: Drugs_array, User: User}
 			err = utility.Render_template(w, "./drugs/templates/alldrugs.html", data)
-			if err != nil {
-				fmt.Printf("Error Drugs 9: %v\n", err)
-				http.Redirect(w, r, "/error", http.StatusFound)
-			}
-		} else {
-			//failed to get all drugs
-			fmt.Printf("Error Drugs 4: %v\n", err)
-			http.Redirect(w, r, "/error", http.StatusFound)
+			return err
 		}
-	} else {
-		//user is not authorized
-		fmt.Printf("Error Drugs 3: %v\n", err)
-		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+	return err
 
 }
 
@@ -135,7 +104,7 @@ func All_drugs() ([]model.Drug, error) {
 }
 
 // handler of "/drug/searchdrug"
-func Search_result_page(w http.ResponseWriter, r *http.Request) {
+func Search_result_page(w http.ResponseWriter, r *http.Request) error {
 	user, err := session.Is_user_authorized(r, []string{"recipient", "storekeeper"})
 	if err == nil {
 		drug_name := r.URL.Query().Get("drugname")
@@ -154,6 +123,7 @@ func Search_result_page(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error Drugs 9: %v\n", err)
 		http.Redirect(w, r, "/error", http.StatusFound)
 	}
+	return nil
 }
 
 func Find_drug(drugname string) (model.Drug, error) {
