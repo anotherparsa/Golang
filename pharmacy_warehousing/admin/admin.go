@@ -33,10 +33,12 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err != nil {
 		utility.Error_handler(w, err.Error())
+		return
 	}
 	err = r.ParseForm()
 	if err != nil {
 		utility.Error_handler(w, err.Error())
+		return
 	}
 	name := r.PostForm.Get("staffname")
 	family := r.PostForm.Get("stafffamily")
@@ -46,8 +48,20 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	err = Create_staff_record(name, family, random_staffid, random_userid, position, password)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
+		return
 	}
-	http.Redirect(w, r, "/staff/home", http.StatusFound)
+	data := DataToSend{Staff: model.Staff{
+		Name:     name,
+		Family:   family,
+		Staffid:  random_staffid,
+		Position: position,
+		Password: password,
+	}}
+	err = utility.Render_template(w, "./admin/templates/staffcreation.html", data)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
 }
 
 func Create_staff_record(name string, family string, random_staffid string, random_userid string, position string, password string) error {

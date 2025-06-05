@@ -34,14 +34,13 @@
                 <td>نا مشخض</td>
                 {{end}}
                 <td>
-                <button class="edit-button">ویرایش</button>
-                <button class="delete-button">حذف</button>
+                <button class="edit-button"><a href="/staff/edituser/{{.Id}}">ویرایش </a></button>
+                <button class="delete-button"><a href="/staff/deleteuser/{{.Id}}">حذف</a></button>
                 </td>
             </tr>
             {{end}}
         </tbody>
     </table>
-    
     <a href="/staff/home" class="return-button">Return</a>
 </body>
 </html>

@@ -43,5 +43,5 @@ func Generate_staffid_userid(position string) (string, string) {
 	} else if position == "admin" {
 		random_staffid = fmt.Sprintf("a%v", random_staffid_postfix)
 	}
-	return uuid.New().String(), random_staffid
+	return random_staffid, uuid.New().String()
 }

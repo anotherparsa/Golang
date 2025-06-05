@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Created Successfully</title>
+    <link rel="stylesheet" href="/static/staffcreation.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>کارمند با موفقیت ساخته شد</h2>
+    <p>توضیحات: </p>
+    <div class="details">
+        <p>نام: <strong id="staffId">{{$.Staff.Name}}</strong></p>
+        <p>نام خانوادگی: <strong id="initialPassword">{{$.Staff.Family}}</strong></p>
+        <p>کد پرسنلی: <strong id="staffId">{{$.Staff.Staffid}}</strong></p>
+        {{if eq $.Staff.Position "recipient"}}
+                <p>سمت: <strong id="initialPassword">نسخه پیج</strong></p>
+        {{else if eq $.Staff.Position "storekeeper"}}
+                        <p>سمت: <strong id="initialPassword">انبار دار</strong></p>
+        {{else if eq $.Staff.Position "admin"}}
+                                <p>سمت: <strong id="initialPassword">آدمین</strong></p>
+                                {{end}}
+        <p>گذرواژه اولیه: <strong id="initialPassword">{{$.Staff.Password}}</strong></p>
+    </div>
+    <button onclick="returnToPreviousPage()">Return</button>
+</div>
+
+<script>
+    function returnToPreviousPage() {
+        // Logic to return to the previous page
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>

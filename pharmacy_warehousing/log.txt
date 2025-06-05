@@ -3,3 +3,13 @@
 0 - open ./admin/templates/admin.html: no such file or directory => staff
 0 - open ./admin/templates/admin.html: no such file or directory => staff
 1 - open ./admin/templates/admin.html: no such file or directory => staff
+0 - http: named cookie not present
+1 - http: named cookie not present
+0 - open ./admin/templates/admin.html: no such file or directory
+0 - Error 1406 (22001): Data too long for column 'staffid' at row 1
+1 - template: staffcreation.html:15: unexpected "}" in command
+2 - Error 1406 (22001): Data too long for column 'staffid' at row 1
+0 - Error 1406 (22001): Data too long for column 'staffid' at row 1
+1 - Error 1406 (22001): Data too long for column 'staffid' at row 1
+0 - template: staffcreation.html:38: unexpected EOF
+1 - template: allstaff.html:37:72: executing "allstaff.html" at <$.Id>: can't evaluate field Id in type admin.DataToSend

@@ -1,0 +1,48 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #e0f7fa; /* Light cyan background */
+}
+
+.container {
+    text-align: center;
+    padding: 30px;
+    border: 2px solid #009688; /* Teal border */
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    color: #00796b; /* Darker teal for heading */
+}
+
+.details {
+    margin: 20px 0;
+    background-color: #f1f8e9; /* Light green background for details */
+    padding: 15px;
+    border-radius: 5px;
+}
+
+strong {
+    color: #388e3c; /* Dark green for strong text */
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

@@ -39,6 +39,7 @@ func Login_processor(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			utility.Error_handler(w, err.Error())
 		}
+		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	}
 }
 
