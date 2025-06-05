@@ -2,91 +2,136 @@ package admin
 
 import (
 	"PharmacyWarehousing/databasetool"
+	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
 	"PharmacyWarehousing/utility"
 	"bufio"
 	"fmt"
-	"math/rand/v2"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
-
-	"github.com/google/uuid"
 )
 
+type DataToSend struct {
+	Staff interface{}
+}
+
 // handler of "/admin/addstaff"
-func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) error {
+func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
-	if err == nil {
-		err = utility.Render_template(w, "./admin/templates/addstaff.html", nil)
-		return err
+	if err != nil {
+		utility.Error_handler(w, err.Error())
 	}
-	return err
+	err = utility.Render_template(w, "./admin/templates/addstaff.html", nil)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
 }
 
 // handler of "/admin/addstaffprocessor"
-func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) error {
+func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
-	if err == nil {
-		err = r.ParseForm()
-		if err == nil {
-			name := r.PostForm.Get("staffname")
-			family := r.PostForm.Get("stafffamily")
-			position := r.PostForm.Get("position")
-			password := r.PostForm.Get("password")
-			err = Create_staff_record(name, family, position, password)
-			if err == nil {
-				http.Redirect(w, r, "/staff/home", http.StatusFound)
-				return err
-			}
-		}
+	if err != nil {
+		utility.Error_handler(w, err.Error())
 	}
-	return err
+	err = r.ParseForm()
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
+	name := r.PostForm.Get("staffname")
+	family := r.PostForm.Get("stafffamily")
+	position := r.PostForm.Get("position")
+	password := r.PostForm.Get("password")
+	random_staffid, random_userid := utility.Generate_staffid_userid(position)
+	err = Create_staff_record(name, family, random_staffid, random_userid, position, password)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
+	http.Redirect(w, r, "/staff/home", http.StatusFound)
 }
 
-func Create_staff_record(name string, family string, position string, password string) error {
-	random_staffid_postfix := strconv.Itoa(rand.IntN(99999-10000) + 10000)
-	var random_staffid string
-	if position == "recipient" {
-		random_staffid = fmt.Sprintf("r%v", random_staffid_postfix)
-	} else if position == "storekeeper" {
-		random_staffid = fmt.Sprintf("s%v", random_staffid_postfix)
-	} else if position == "admin" {
-		random_staffid = fmt.Sprintf("a%v", random_staffid_postfix)
-	}
-	random_userid := uuid.New().String()
+func Create_staff_record(name string, family string, random_staffid string, random_userid string, position string, password string) error {
 	database, err := databasetool.Connect_to_database()
-	if err == nil {
-		defer database.Close()
-		querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, userid, position, password) VALUES (?, ?, ?, ?, ?, ?)")
-		if err == nil {
-			defer querry.Close()
-			_, err = querry.Exec(name, family, random_staffid, random_userid, position, password)
-			return err
-		}
+	if err != nil {
+		return err
 	}
-	return err
+	defer database.Close()
+	querry, err := database.Prepare("INSERT INTO staff (name, family, staffid, userid, position, password) VALUES (?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	defer querry.Close()
+	_, err = querry.Exec(name, family, random_staffid, random_userid, position, password)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func Create_admin_user() error {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Name for Admin user : ")
 	name, err := reader.ReadString('\n')
-	if err == nil {
-		name = strings.Replace(name, "\n", "", -1)
-		fmt.Println("Family for Admin user : ")
-		family, err := reader.ReadString('\n')
+	if err != nil {
+		return err
+	}
+	name = strings.Replace(name, "\n", "", -1)
+	fmt.Println("Family for Admin user : ")
+	family, err := reader.ReadString('\n')
+	if err != nil {
+		return err
+	}
+	family = strings.Replace(family, "\n", "", -1)
+	fmt.Println("Password for Admin user : ")
+	password, err := reader.ReadString('\n')
+	if err != nil {
+		return err
+	}
+	password = strings.Replace(password, "\n", "", -1)
+	random_staffid, random_userid := utility.Generate_staffid_userid("admin")
+	err = Create_staff_record(name, family, random_staffid, random_userid, "admin", password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// handler of  "/admin/allstaff"
+func All_staff_page(w http.ResponseWriter, r *http.Request) {
+	_, err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
+	staff_array, err := All_staff()
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
+	data := DataToSend{Staff: staff_array}
+	err = utility.Render_template(w, "./admin/templates/allstaff.html", data)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+	}
+
+}
+
+func All_staff() ([]model.Staff, error) {
+	staff_instance := model.Staff{}
+	staff_array := []model.Staff{}
+	database, err := databasetool.Connect_to_database()
+	if err != nil {
+		return staff_array, err
+	}
+	defer database.Close()
+	rows, err := database.Query("SELECT * FROM staff")
+	if err != nil {
+		return staff_array, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position, &staff_instance.Password)
 		if err == nil {
-			family = strings.Replace(family, "\n", "", -1)
-			fmt.Println("Password for Admin user : ")
-			password, err := reader.ReadString('\n')
-			if err == nil {
-				password = strings.Replace(password, "\n", "", -1)
-				err = Create_staff_record(name, family, "admin", password)
-				return err
-			}
+			staff_array = append(staff_array, staff_instance)
 		}
 	}
-	return err
+	return staff_array, rows.Err()
 }
