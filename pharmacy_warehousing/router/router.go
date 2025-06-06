@@ -61,6 +61,8 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			drugs.Create_drug_processor(w, r)
 		} else if url_path == "/drug/searchdrug" {
 			drugs.Search_result_page(w, r)
+		} else if strings.HasPrefix(url_path, "/drug/deletedrugprocessor/") {
+			drugs.Delete_drug_processor(w, r)
 		} else {
 			fmt.Fprintf(w, "404 page nout fount")
 		}

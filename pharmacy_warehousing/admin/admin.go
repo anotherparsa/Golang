@@ -90,13 +90,11 @@ func Admin_edit_staff_page(w http.ResponseWriter, r *http.Request) {
 func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
 	user, err := session.Is_user_authorized(r, []string{"admin"})
 	if err != nil {
-		fmt.Println("here1")
 		utility.Error_handler(w, err.Error())
 		return
 	}
 	err = r.ParseForm()
 	if err != nil {
-		fmt.Println("here2")
 		utility.Error_handler(w, err.Error())
 		return
 	}
@@ -112,20 +110,15 @@ func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
 	}
 	err = staff.Edit_staff_record(id, name, familt, staffid, position, password)
 	if err != nil {
-		fmt.Println("here3")
 		utility.Error_handler(w, err.Error())
 		return
 	}
 	if previous_staffid == user.Staffid {
-		fmt.Println("here4")
 		err = session.User_logout(w, r)
 		if err != nil {
-			fmt.Println("here6")
 			utility.Error_handler(w, err.Error())
 			return
 		}
-		http.Redirect(w, r, "/staff/login", http.StatusFound)
-		return
 	} else {
 		http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 	}

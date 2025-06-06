@@ -54,3 +54,7 @@
 0 - 
 0 - 
 0 - 
+0 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/8'
+1 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/8'
+2 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/7'
+0 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/6'
