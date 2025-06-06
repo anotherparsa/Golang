@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/editstaff.css">
+    <title>Edit Account Info</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Drug Info</h1>
+        <form class="edit-form" action="/staff/editdrugprocessor" method="POST">
+            <label for="drugname"> Name:</label>
+            <input type="text" id="drugname" name="drugname" placeholder="{{$.Drug.Name}}" required>
+            <label for="drugid">Drugid:</label>
+            <input type="text" id="drugid" name="drugid" placeholder="{{$.Drug.Drugid}}"  required>
+            <label for="company">Company : </label>
+            <input type="text" id="company" name="company" value="{{$.Drug.Company}}">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" value="{{$.Drug.Price}}">
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" name="stock" placeholder="{{$.Drug.Stock}}"  required>
+            <button type="submit">Apply</button>
+            <input type="hidden" name="id" value="{{$.Drug.Id}}">
+        </form>
+    </div>
+</body>
+</html>

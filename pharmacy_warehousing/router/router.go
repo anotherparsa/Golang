@@ -24,6 +24,12 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			login.Login_processor(w, r)
 		} else if url_path == "/staff/logout" {
 			session.User_logout(w, r)
+		} else if strings.HasPrefix(url_path, "/staff/editdrug") {
+			if url_path == "/staff/editdrugprocessor" {
+				drugs.Edit_drug_processor(w, r)
+			} else {
+				drugs.Edit_drug_page(w, r)
+			}
 		} else {
 			fmt.Fprintf(w, "404 page not found")
 		}
@@ -36,6 +42,13 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			admin.Admin_add_staff_processor(w, r)
 		} else if url_path == "/admin/allstaff" {
 			admin.All_staff_page(w, r)
+		} else if strings.HasPrefix(url_path, "/admin/editstaff") {
+			if url_path == "/admin/editstaffprocessor" {
+				admin.Admin_edit_staff_processor(w, r)
+			} else {
+				admin.Admin_edit_staff_page(w, r)
+			}
+
 		} else {
 			fmt.Fprintf(w, "404 page not found")
 		}

@@ -16,6 +16,7 @@ func Login_page(w http.ResponseWriter, r *http.Request) {
 		err := utility.Render_template(w, "./login/templates/login.html", nil)
 		if err != nil {
 			utility.Error_handler(w, err.Error())
+			return
 		}
 	}
 }
@@ -27,17 +28,20 @@ func Login_processor(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			utility.Error_handler(w, err.Error())
+			return
 		}
 		staffid := r.PostForm.Get("staffid")
 		password := r.PostForm.Get("password")
 		userid, err := Authenticate_user(staffid, password)
 		if err != nil {
 			utility.Error_handler(w, err.Error())
+			return
 		}
 		new_uuid := uuid.New().String()
 		err = session.Set_session(w, new_uuid, userid)
 		if err != nil {
 			utility.Error_handler(w, err.Error())
+			return
 		}
 		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	}

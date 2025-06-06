@@ -1,15 +1,56 @@
-14 - open ./admin/templates/admin.html: no such file or directory in staff
-15 - open ./admin/templates/admin.html: no such file or directory in staff
-0 - open ./admin/templates/admin.html: no such file or directory => staff
-0 - open ./admin/templates/admin.html: no such file or directory => staff
-1 - open ./admin/templates/admin.html: no such file or directory => staff
+0 - http: named cookie not present
+0 - http: named cookie not present
+0 - 
+1 - 
+0 - 
+0 - 
+1 - 
+2 - 
+3 - 
+4 - 
+5 - 
+6 - 
+7 - 
+8 - 
+9 - 
+0 - 
+1 - 
+2 - 
+3 - 
+4 - 
+5 - 
+6 - 
+7 - 
+0 - sql: no rows in result set
+0 - sql: no rows in result set
+0 - Error 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '/' at line 1
+0 - Error 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '?' at line 1
+0 - sql: expected 6 destination arguments in Scan, not 5
+0 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+1 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+2 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+0 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+1 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+2 - template: editdrug.html:14:77: executing "editdrug.html" at <$.Name>: can't evaluate field Name in type drugs.DataToSend
+3 - template: editdrug.html:14:77: executing "editdrug.html" at <$.Name>: can't evaluate field Name in type drugs.DataToSend
+4 - template: editdrug.html:16:73: executing "editdrug.html" at <$.Drug.drugid>: can't evaluate field drugid in type interface {}
+5 - template: editdrug.html:18:69: executing "editdrug.html" at <$.Drug.Staffid>: can't evaluate field Staffid in type interface {}
 0 - http: named cookie not present
 1 - http: named cookie not present
-0 - open ./admin/templates/admin.html: no such file or directory
-0 - Error 1406 (22001): Data too long for column 'staffid' at row 1
-1 - template: staffcreation.html:15: unexpected "}" in command
-2 - Error 1406 (22001): Data too long for column 'staffid' at row 1
-0 - Error 1406 (22001): Data too long for column 'staffid' at row 1
-1 - Error 1406 (22001): Data too long for column 'staffid' at row 1
-0 - template: staffcreation.html:38: unexpected EOF
-1 - template: allstaff.html:37:72: executing "allstaff.html" at <$.Id>: can't evaluate field Id in type admin.DataToSend
+2 - http: named cookie not present
+3 - http: named cookie not present
+4 - 
+0 - 
+0 - http: named cookie not present
+1 - http: named cookie not present
+2 - http: named cookie not present
+3 - 
+4 - 
+5 - 
+6 - 
+0 - 
+1
+
+0 - 
+0 - 
+0 - 

@@ -4,6 +4,7 @@ import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
+	"PharmacyWarehousing/staff"
 	"PharmacyWarehousing/utility"
 	"bufio"
 	"fmt"
@@ -21,10 +22,12 @@ func Admin_add_staff_page(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err != nil {
 		utility.Error_handler(w, err.Error())
+		return
 	}
 	err = utility.Render_template(w, "./admin/templates/addstaff.html", nil)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
+		return
 	}
 }
 
@@ -61,6 +64,70 @@ func Admin_add_staff_processor(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utility.Error_handler(w, err.Error())
 		return
+	}
+}
+
+// handler of "admin/editstaff/?""
+func Admin_edit_staff_page(w http.ResponseWriter, r *http.Request) {
+	_, err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	user, err := staff.Get_staff_by("id", strings.TrimPrefix(r.URL.Path, "/admin/editstaff/"))
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	data := DataToSend{Staff: user}
+	err = utility.Render_template(w, "./admin/templates/editstaffpage.html", data)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+}
+
+func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
+	user, err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		fmt.Println("here1")
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	err = r.ParseForm()
+	if err != nil {
+		fmt.Println("here2")
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	name := r.PostForm.Get("name")
+	familt := r.PostForm.Get("family")
+	staffid := r.PostForm.Get("staffid")
+	previous_staffid := staffid
+	position := r.PostForm.Get("position")
+	password := r.PostForm.Get("password")
+	id := r.PostForm.Get("id")
+	if staffid[0] != position[0] {
+		staffid, _ = utility.Generate_staffid_userid(position)
+	}
+	err = staff.Edit_staff_record(id, name, familt, staffid, position, password)
+	if err != nil {
+		fmt.Println("here3")
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	if previous_staffid == user.Staffid {
+		fmt.Println("here4")
+		err = session.User_logout(w, r)
+		if err != nil {
+			fmt.Println("here6")
+			utility.Error_handler(w, err.Error())
+			return
+		}
+		http.Redirect(w, r, "/staff/login", http.StatusFound)
+		return
+	} else {
+		http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 	}
 }
 
@@ -114,16 +181,22 @@ func Create_admin_user() error {
 func All_staff_page(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err != nil {
+		fmt.Println("We've reached here1")
 		utility.Error_handler(w, err.Error())
+		return
 	}
 	staff_array, err := All_staff()
 	if err != nil {
+		fmt.Println("We've reached here2")
 		utility.Error_handler(w, err.Error())
+		return
 	}
 	data := DataToSend{Staff: staff_array}
 	err = utility.Render_template(w, "./admin/templates/allstaff.html", data)
 	if err != nil {
+		fmt.Println("We've reached here3")
 		utility.Error_handler(w, err.Error())
+		return
 	}
 
 }

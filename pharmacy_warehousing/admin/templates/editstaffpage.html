@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/editstaff.css">
+    <title>Edit Account Info</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Account Info</h1>
+        <form class="edit-form" action="/admin/editstaffprocessor" method="POST">
+            <label for="name"> Name:</label>
+            <input type="text" id="name" name="name" placeholder="{{$.Staff.Name}}" required>
+
+            <label for="family">Family:</label>
+            <input type="text" id="family" name="family" placeholder="{{$.Staff.Family}}"  required>
+
+            <label for="staffid">Staff ID:{{$.Staff.Staffid}}</label>
+            <input type="hidden"  name="staffid" value="{{$.Staff.Staffid}}">
+
+            <label for="position">Position:</label>
+        <select name="position" id="position">
+            <option value="storekeeper">انبار دار</option>
+            <option value="recipient">نسخه پیچ</option>
+        </select>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="{{$.Staff.Password}}"  required>
+
+            <button type="submit">Apply</button>
+                        <input type="hidden" name="id" value="{{$.Staff.Id}}">
+        </form>
+    </div>
+</body>
+</html>
