@@ -4,7 +4,6 @@ import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"PharmacyWarehousing/session"
-	"PharmacyWarehousing/staff"
 	"PharmacyWarehousing/utility"
 	"bufio"
 	"fmt"
@@ -74,7 +73,7 @@ func Admin_edit_staff_page(w http.ResponseWriter, r *http.Request) {
 		utility.Error_handler(w, err.Error())
 		return
 	}
-	user, err := staff.Get_staff_by("id", strings.TrimPrefix(r.URL.Path, "/admin/editstaff/"))
+	user, err := Get_staff_by("id", strings.TrimPrefix(r.URL.Path, "/admin/editstaff/"))
 	if err != nil {
 		utility.Error_handler(w, err.Error())
 		return
@@ -84,43 +83,6 @@ func Admin_edit_staff_page(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utility.Error_handler(w, err.Error())
 		return
-	}
-}
-
-func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
-	user, err := session.Is_user_authorized(r, []string{"admin"})
-	if err != nil {
-		utility.Error_handler(w, err.Error())
-		return
-	}
-	err = r.ParseForm()
-	if err != nil {
-		utility.Error_handler(w, err.Error())
-		return
-	}
-	name := r.PostForm.Get("name")
-	familt := r.PostForm.Get("family")
-	staffid := r.PostForm.Get("staffid")
-	previous_staffid := staffid
-	position := r.PostForm.Get("position")
-	password := r.PostForm.Get("password")
-	id := r.PostForm.Get("id")
-	if staffid[0] != position[0] {
-		staffid, _ = utility.Generate_staffid_userid(position)
-	}
-	err = staff.Edit_staff_record(id, name, familt, staffid, position, password)
-	if err != nil {
-		utility.Error_handler(w, err.Error())
-		return
-	}
-	if previous_staffid == user.Staffid {
-		err = session.User_logout(w, r)
-		if err != nil {
-			utility.Error_handler(w, err.Error())
-			return
-		}
-	} else {
-		http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 	}
 }
 
@@ -167,6 +129,7 @@ func Create_admin_user() error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Staff id : %v\n", random_staffid)
 	return nil
 }
 
@@ -174,7 +137,6 @@ func Create_admin_user() error {
 func All_staff_page(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"admin"})
 	if err != nil {
-		fmt.Println("We've reached here1")
 		utility.Error_handler(w, err.Error())
 		return
 	}
@@ -214,4 +176,108 @@ func All_staff() ([]model.Staff, error) {
 		}
 	}
 	return staff_array, rows.Err()
+}
+
+func Get_staff_by(condition string, condition_value string) (model.Staff, error) {
+	staff_instance := model.Staff{}
+	database, err := databasetool.Connect_to_database()
+	if err != nil {
+		return staff_instance, err
+	}
+	defer database.Close()
+	row := database.QueryRow(fmt.Sprintf("SELECT * FROM staff WHERE %v=?", condition), condition_value)
+	err = row.Scan(&staff_instance.Id, &staff_instance.Name, &staff_instance.Family, &staff_instance.Staffid, &staff_instance.Userid, &staff_instance.Position, &staff_instance.Password)
+	if err != nil {
+		return staff_instance, err
+	}
+	return staff_instance, nil
+}
+
+func Edit_staff_record(id string, name string, family string, random_staffid string, position string, password string) error {
+	database, err := databasetool.Connect_to_database()
+	if err != nil {
+		return err
+	}
+	defer database.Close()
+	querry, err := database.Prepare("UPDATE staff SET name=?, family=?, staffid=?, position=?, password=? WHERE id=?")
+	if err != nil {
+		return err
+	}
+	defer querry.Close()
+	_, err = querry.Exec(name, family, random_staffid, position, password, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
+	user, err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	err = r.ParseForm()
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	name := r.PostForm.Get("name")
+	familt := r.PostForm.Get("family")
+	staffid := r.PostForm.Get("staffid")
+	previous_staffid := staffid
+	position := r.PostForm.Get("position")
+	password := r.PostForm.Get("password")
+	id := r.PostForm.Get("id")
+	if staffid[0] != position[0] {
+		staffid, _ = utility.Generate_staffid_userid(position)
+	}
+	err = Edit_staff_record(id, name, familt, staffid, position, password)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	if previous_staffid == user.Staffid {
+		err = session.User_logout(w, r)
+		if err != nil {
+			utility.Error_handler(w, err.Error())
+			return
+		}
+	} else {
+		http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
+	}
+}
+
+func Delete_staff_record(w http.ResponseWriter, r *http.Request) {
+	user, err := session.Is_user_authorized(r, []string{"admin"})
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	staffsid := strings.TrimPrefix(r.URL.Path, "/admin/deletestaff/")
+	database, err := databasetool.Connect_to_database()
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	defer database.Close()
+	querry, err := database.Prepare("DELETE FROM staff WHERE id=?")
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	defer querry.Close()
+	_, err = querry.Exec(staffsid)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
+	if staffsid == user.Id {
+		err = session.User_logout(w, r)
+		if err != nil {
+			utility.Error_handler(w, err.Error())
+			return
+		}
+	}
+	http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 }

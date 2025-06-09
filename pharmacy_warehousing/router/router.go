@@ -48,7 +48,8 @@ func Routing(w http.ResponseWriter, r *http.Request) {
 			} else {
 				admin.Admin_edit_staff_page(w, r)
 			}
-
+		} else if strings.HasPrefix(url_path, "/admin/deletestaff/") {
+			admin.Delete_staff_record(w, r)
 		} else {
 			fmt.Fprintf(w, "404 page not found")
 		}

@@ -93,7 +93,7 @@ func Edit_drug_processor(w http.ResponseWriter, r *http.Request) {
 	price := r.PostForm.Get("price")
 	stock := r.PostForm.Get("stock")
 	id := r.PostForm.Get("id")
-	err = Edit_staff_record(id, name, drugid, company, price, stock)
+	err = Edit_drug_record(id, name, drugid, company, price, stock)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
 		return
@@ -116,18 +116,18 @@ func Get_drug_by(condition string, condition_value string) (model.Drug, error) {
 	return drug_instance, nil
 }
 
-func Edit_staff_record(id string, name string, drugid string, company string, price string, stock string) error {
+func Edit_drug_record(id string, name string, drugid string, company string, price string, stock string) error {
 	database, err := databasetool.Connect_to_database()
 	if err != nil {
 		return err
 	}
 	defer database.Close()
-	querry, err := database.Prepare("UPDATE drug SET name=?, drugid=?, company=?, price=?, stock=?")
+	querry, err := database.Prepare("UPDATE drug SET name=?, drugid=?, company=?, price=?, stock=? where id=?")
 	if err != nil {
 		return err
 	}
 	defer querry.Close()
-	_, err = querry.Exec(name, drugid, company, price, stock)
+	_, err = querry.Exec(name, drugid, company, price, stock, id)
 	if err != nil {
 		return err
 	}
@@ -216,19 +216,25 @@ func Search_result_page(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func Find_drug(drugname string) (model.Drug, error) {
-	drug_instance := model.Drug{}
+func Find_drug(drugname string) ([]model.Drug, error) {
+	drug_array := []model.Drug{}
 	database, err := databasetool.Connect_to_database()
 	if err != nil {
-		return drug_instance, err
+		return drug_array, err
 	}
 	defer database.Close()
-	row := database.QueryRow("SELECT * FROM drug WHERE name=?", drugname)
-	err = row.Scan(&drug_instance.Id, &drug_instance.Name, &drug_instance.Drugid, &drug_instance.Company, &drug_instance.Price, &drug_instance.Stock)
+	rows, err := database.Query("SELECT * FROM drug WHERE name=?", drugname)
 	if err != nil {
-		return drug_instance, err
+		return drug_array, err
 	}
-	return drug_instance, row.Err()
+	drug_instance := model.Drug{}
+	for rows.Next() {
+		err = rows.Scan(&drug_instance.Id, &drug_instance.Name, &drug_instance.Drugid, &drug_instance.Company, &drug_instance.Price, &drug_instance.Stock)
+		if err == nil {
+			drug_array = append(drug_array, drug_instance)
+		}
+	}
+	return drug_array, rows.Err()
 }
 
 func Delete_drug_processor(w http.ResponseWriter, r *http.Request) {

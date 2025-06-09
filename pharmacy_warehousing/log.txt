@@ -58,3 +58,19 @@
 1 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/8'
 2 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/7'
 0 - Error 1292 (22007): Truncated incorrect INTEGER value: '/drug/deletedrugprocessor/6'
+0 - http: named cookie not present
+1 - http: named cookie not present
+2 - http: named cookie not present
+3 - sql: no rows in result set
+0 - template: searchresult.html:26:23: executing "searchresult.html" at <$.Drug.Name>: can't evaluate field Name in type interface {}
+1 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Drug.Name>: can't evaluate field Name in type interface {}
+2 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Drug.Name>: can't evaluate field Name in type interface {}
+3 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Drug.Name>: can't evaluate field Name in type interface {}
+4 - template: searchresult.html:25: bad character U+0024 '$'
+5 - template: searchresult.html:27: undefined variable "$Name"
+6 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Name>: can't evaluate field Name in type drugs.DataToSend
+7 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Name>: can't evaluate field Name in type drugs.DataToSend
+0 - template: searchresult.html:27:23: executing "searchresult.html" at <$.Name>: can't evaluate field Name in type drugs.DataToSend
+0 - http: named cookie not present
+1 - http: named cookie not present
+0 - sql: no rows in result set
