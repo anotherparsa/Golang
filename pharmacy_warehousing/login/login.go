@@ -10,7 +10,8 @@ import (
 )
 
 func Login_page(w http.ResponseWriter, r *http.Request) {
-	if session.Check_if_cookie_exists(r, "sessionid") {
+	_, err := session.Is_user_authorized(r, []string{"storekeeper", "admin", "recipient"})
+	if err == nil {
 		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	} else {
 		err := utility.Render_template(w, "./login/templates/login.html", nil)
@@ -22,7 +23,8 @@ func Login_page(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login_processor(w http.ResponseWriter, r *http.Request) {
-	if session.Check_if_cookie_exists(r, "sessionid") {
+	_, err := session.Is_user_authorized(r, []string{"storekeeper", "admin", "recipient"})
+	if err == nil {
 		http.Redirect(w, r, "/staff/home", http.StatusFound)
 	} else {
 		err := r.ParseForm()

@@ -261,12 +261,16 @@ func Delete_staff_record(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer database.Close()
+	deleted_user, err := Get_staff_by("id", staffsid)
+	if err != nil {
+		utility.Error_handler(w, err.Error())
+		return
+	}
 	querry, err := database.Prepare("DELETE FROM staff WHERE id=?")
 	if err != nil {
 		utility.Error_handler(w, err.Error())
 		return
 	}
-	defer querry.Close()
 	_, err = querry.Exec(staffsid)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
@@ -278,6 +282,8 @@ func Delete_staff_record(w http.ResponseWriter, r *http.Request) {
 			utility.Error_handler(w, err.Error())
 			return
 		}
+	} else {
+		session.Delete_session_record("userid", deleted_user.Userid)
 	}
 	http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 }

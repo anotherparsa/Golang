@@ -74,3 +74,22 @@
 0 - http: named cookie not present
 1 - http: named cookie not present
 0 - sql: no rows in result set
+0 - http: named cookie not present
+1 - sql: no rows in result set
+0 - sql: no rows in result set
+0 - sql: no rows in result set
+1 - sql: no rows in result set
+2 - sql: no rows in result set
+3 - sql: no rows in result set
+4 - http: named cookie not present
+5 - http: named cookie not present
+6 - http: named cookie not present
+0 - http: named cookie not present
+1 - http: named cookie not present
+2 - http: named cookie not present
+0 - http: named cookie not present
+0 - http: named cookie not present
+1 - http: named cookie not present
+0 - http: named cookie not present
+0 - sql: no rows in result set
+1 - sql: no rows in result set

@@ -4,6 +4,7 @@ import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
 	"errors"
+	"fmt"
 	"net/http"
 	"slices"
 )
@@ -36,27 +37,22 @@ func Create_session_record(userid string, sessionid string) error {
 	return nil
 }
 
-func Delete_session_record(sessionid string) error {
+func Delete_session_record(condition string, condition_value string) error {
 	database, err := databasetool.Connect_to_database()
 	if err != nil {
 		return err
 	}
 	defer database.Close()
-	querry, err := database.Prepare("DELETE FROM session WHERE sessionid=?")
+	querry, err := database.Prepare(fmt.Sprintf("DELETE FROM session WHERE %v=?", condition))
 	if err != nil {
 		return err
 	}
 	defer querry.Close()
-	_, err = querry.Exec(sessionid)
+	_, err = querry.Exec(condition_value)
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-func Check_if_cookie_exists(r *http.Request, cookiename string) bool {
-	_, err := r.Cookie(cookiename)
-	return err == nil
 }
 
 func Is_user_authorized(r *http.Request, authorized_positions []string) (model.Staff, error) {
@@ -100,7 +96,7 @@ func User_logout(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	err = Delete_session_record(cookie.Value)
+	err = Delete_session_record("sessionid", cookie.Value)
 	if err != nil {
 		return err
 	}

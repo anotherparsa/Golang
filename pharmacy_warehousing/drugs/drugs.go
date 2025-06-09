@@ -202,7 +202,6 @@ func Search_result_page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	drug_name := r.URL.Query().Get("drugname")
-	fmt.Println(drug_name)
 	result_drug, err := Find_drug(drug_name)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
@@ -241,29 +240,23 @@ func Delete_drug_processor(w http.ResponseWriter, r *http.Request) {
 	_, err := session.Is_user_authorized(r, []string{"storekeeper"})
 	if err != nil {
 		utility.Error_handler(w, err.Error())
-		http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
 		return
 	}
 	drugs_id := strings.TrimPrefix(r.URL.Path, "/drug/deletedrugprocessor/")
 	database, err := databasetool.Connect_to_database()
 	if err != nil {
 		utility.Error_handler(w, err.Error())
-		http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
 		return
 	}
 	defer database.Close()
 	querry, err := database.Prepare("DELETE FROM drug WHERE id=?")
 	if err != nil {
 		utility.Error_handler(w, err.Error())
-		http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
 		return
 	}
 	_, err = querry.Exec(drugs_id)
 	if err != nil {
 		utility.Error_handler(w, err.Error())
-		http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
 		return
 	}
-	http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
-
 }
