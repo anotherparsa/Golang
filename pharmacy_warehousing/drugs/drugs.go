@@ -254,6 +254,7 @@ func Delete_drug_processor(w http.ResponseWriter, r *http.Request) {
 		utility.Error_handler(w, err.Error())
 		return
 	}
+	defer querry.Close()
 	_, err = querry.Exec(drugs_id)
 	if err != nil {
 		utility.Error_handler(w, err.Error())

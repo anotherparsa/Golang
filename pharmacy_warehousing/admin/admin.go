@@ -238,11 +238,7 @@ func Admin_edit_staff_processor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if previous_staffid == user.Staffid {
-		err = session.User_logout(w, r)
-		if err != nil {
-			utility.Error_handler(w, err.Error())
-			return
-		}
+		session.User_logout(w, r)
 	} else {
 		http.Redirect(w, r, "/admin/allstaff", http.StatusFound)
 	}
@@ -277,11 +273,7 @@ func Delete_staff_record(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if staffsid == user.Id {
-		err = session.User_logout(w, r)
-		if err != nil {
-			utility.Error_handler(w, err.Error())
-			return
-		}
+		session.User_logout(w, r)
 	} else {
 		session.Delete_session_record("userid", deleted_user.Userid)
 	}

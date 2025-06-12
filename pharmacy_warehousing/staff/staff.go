@@ -16,19 +16,19 @@ func Staff_home_page(w http.ResponseWriter, r *http.Request) {
 	if user.Position == "recipient" {
 		err = utility.Render_template(w, "./staff/templates/recipient.html", nil)
 		if err != nil {
-			http.Redirect(w, r, "/staff/login", http.StatusFound)
+			utility.Error_handler(w, err.Error())
 			return
 		}
 	} else if user.Position == "storekeeper" {
 		err = utility.Render_template(w, "./staff/templates/warehouse.html", nil)
 		if err != nil {
-			http.Redirect(w, r, "/staff/login", http.StatusFound)
+			utility.Error_handler(w, err.Error())
 			return
 		}
 	} else if user.Position == "admin" {
 		err = utility.Render_template(w, "./admin/templates/admin.html", nil)
 		if err != nil {
-			http.Redirect(w, r, "/staff/login", http.StatusFound)
+			utility.Error_handler(w, err.Error())
 			return
 		}
 	}

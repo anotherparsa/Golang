@@ -3,6 +3,7 @@ package session
 import (
 	"PharmacyWarehousing/databasetool"
 	"PharmacyWarehousing/model"
+	"PharmacyWarehousing/utility"
 	"errors"
 	"fmt"
 	"net/http"
@@ -87,18 +88,20 @@ func Is_user_authorized(r *http.Request, authorized_positions []string) (model.S
 }
 
 // handler of "/staff/logout"
-func User_logout(w http.ResponseWriter, r *http.Request) error {
+func User_logout(w http.ResponseWriter, r *http.Request) {
 	_, err := Is_user_authorized(r, []string{"admin", "recipient", "storekeeper"})
 	if err != nil {
-		return err
+		utility.Error_handler(w, err.Error())
+		return
 	}
 	cookie, err := r.Cookie("sessionid")
 	if err != nil {
-		return err
+		utility.Error_handler(w, err.Error())
+		return
 	}
 	err = Delete_session_record("sessionid", cookie.Value)
 	if err != nil {
-		return err
+		return
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:   "sessionid",
@@ -106,5 +109,5 @@ func User_logout(w http.ResponseWriter, r *http.Request) error {
 		Path:   "/",
 	})
 	http.Redirect(w, r, "/staff/login", http.StatusFound)
-	return nil
+
 }
