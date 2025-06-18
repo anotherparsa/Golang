@@ -260,4 +260,5 @@ func Delete_drug_processor(w http.ResponseWriter, r *http.Request) {
 		utility.Error_handler(w, err.Error())
 		return
 	}
+	http.Redirect(w, r, "/drug/alldrugs", http.StatusFound)
 }
